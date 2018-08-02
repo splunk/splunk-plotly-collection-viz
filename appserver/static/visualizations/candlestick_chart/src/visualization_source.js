@@ -72,7 +72,7 @@ define([
 
         //this is supposed get the info from the format menu
         // var plotType = config[this.getPropertyNamespaceInfo().propertyNamespace + 'plotType'] || 'candlestick';
-        var plotType = config['display.visualizations.custom.candlestick_app.candlestick_chart.plotType']|| 'candlestick';
+        var plotType = config['display.visualizations.custom.candlestick_app.candlestick_chart.plotType'] || 'candlestick';
 
 
 
@@ -123,11 +123,14 @@ define([
           xaxis: {
             autorange: true,
             title: 'Date',
+            rangeslider: {
+              visible: false
+            },
             type: 'date'
           },
           yaxis: {
-            autorange: true,
-            type: 'linear'
+            autorange: true
+            // type: 'linear'
           }
         };
 
