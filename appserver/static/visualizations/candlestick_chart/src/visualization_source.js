@@ -45,8 +45,8 @@ define([
             'This chart only supports numbers'
           );
         }
+        
         return data;
-
       },
 
       updateView: function(data, config) {
@@ -70,10 +70,19 @@ define([
         var low = arrayColumn(data.rows, 3);
         var open = arrayColumn(data.rows, 4);
 
+        console.log(time);
+        console.log(close);
+        console.log(high);
+        console.log(low);
+        console.log(open);
+
         //this is supposed get the info from the format menu
         // var plotType = config[this.getPropertyNamespaceInfo().propertyNamespace + 'plotType'] || 'candlestick';
-        var plotType = config['display.visualizations.custom.candlestick_app.candlestick_chart.plotType'] || 'candlestick';
-
+        var xTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAngle'] || 0;
+        var yTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAngle'] || 0;
+        var xDisplayTick = config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] || true;
+        var yDisplayTick = config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] || false;
+        var chartTitle = config['display.visualizations.custom.candlestick_app.candlestick_chart.title'] || '';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -102,16 +111,17 @@ define([
 
           low: low,
           open: open,
-          type: plotType,
+          type: 'candlestick',
           xaxis: 'x',
           yaxis: 'y'
-        };
+        }; //end of trace
 
         //places the data made in the variable chart into the variable data
         var data1 = [trace];
 
         // this block sets the prerequisites to display the chart
         var layout = {
+          title: chartTitle,
           margin: {
             r: 10,
             t: 25,
@@ -119,9 +129,10 @@ define([
             l: 60
           },
           showlegend: false,
-
           xaxis: {
             autorange: true,
+            showticklabels: xDisplayTick ,
+            tickangle: xTickAngle,
             title: 'Date',
             rangeslider: {
               visible: false
@@ -129,13 +140,14 @@ define([
             type: 'date'
           },
           yaxis: {
-            autorange: true
-            // type: 'linear'
+            autorange: true,
+            showticklabels: yDisplayTick ,
+            tickangle: yTickAngle
           }
         };
 
         Plotly.plot('candlestickContainer', data1, layout);
 
-      }
+      } //end of layout
     });
   });
