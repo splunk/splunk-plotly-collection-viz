@@ -45,16 +45,21 @@ define([
             'This chart only supports numbers'
           );
         }
-        
+
         return data;
       },
 
       updateView: function(data, config) {
 
+        console.log("raw data?" + data);
         if (!data) {
           return;
         }
-        var dataSet = data;
+
+        var dataSet = data
+        console.log("dataSet?" + dataSet);
+
+        Plotly.purge('candlestickContainer');
 
         $('#' + this.id).empty();
 
@@ -83,6 +88,8 @@ define([
         var xDisplayTick = config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] || true;
         var yDisplayTick = config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] || false;
         var chartTitle = config['display.visualizations.custom.candlestick_app.candlestick_chart.title'] || '';
+        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'] || 'Date';
+        var yAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAxisName'] || '';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -118,6 +125,7 @@ define([
 
         //places the data made in the variable chart into the variable data
         var data1 = [trace];
+        console.log("data1" + data1);
 
         // this block sets the prerequisites to display the chart
         var layout = {
@@ -131,9 +139,9 @@ define([
           showlegend: false,
           xaxis: {
             autorange: true,
-            showticklabels: xDisplayTick ,
+            showticklabels: xDisplayTick,
             tickangle: xTickAngle,
-            title: 'Date',
+            title: xAxisLabel,
             rangeslider: {
               visible: false
             },
@@ -141,12 +149,13 @@ define([
           },
           yaxis: {
             autorange: true,
-            showticklabels: yDisplayTick ,
-            tickangle: yTickAngle
+            showticklabels: yDisplayTick,
+            tickangle: yTickAngle,
+            title: yAxisLabel
           }
         };
 
-        Plotly.plot('candlestickContainer', data1, layout);
+        Plotly.plot('candlestickContainer', data1, layout , {staticPlot: true});
 
       } //end of layout
     });

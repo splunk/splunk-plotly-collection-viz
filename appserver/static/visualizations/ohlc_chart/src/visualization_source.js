@@ -51,10 +51,13 @@ define([
 
       updateView: function(data, config) {
 
+        console.log("raw data?" + data);
         if (!data) {
           return;
         }
         var dataSet = data;
+        console.log("dataSet?" + dataSet);
+
 
         $('#' + this.id).empty();
 
@@ -118,6 +121,7 @@ define([
 
         //places the data made in the variable chart into the variable data
         var data1 = [trace];
+        console.log("data1" + data1);
 
         // this block sets the prerequisites to display the chart
         var layout = {
@@ -131,7 +135,7 @@ define([
           showlegend: false,
           xaxis: {
             autorange: true,
-            showticklabels: xDisplayTick ,
+            showticklabels: xDisplayTick,
             tickangle: xTickAngle,
             title: 'Date',
             rangeslider: {
@@ -141,7 +145,7 @@ define([
           },
           yaxis: {
             autorange: true,
-            showticklabels: yDisplayTick ,
+            showticklabels: yDisplayTick,
             tickangle: yTickAngle
           }
         };

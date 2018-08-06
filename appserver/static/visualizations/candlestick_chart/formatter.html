@@ -3,13 +3,6 @@
     <splunk-text-input name="{{VIZ_NAMESPACE}}.chartTitle">
     </splunk-text-input>
   </splunk-control-group>
-
-  <splunk-control-group label="Display Label">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.chartDisplay" value=true>
-      <option value="true">Show</option>
-      <option value="false">Hide</option>
-    </splunk-radio-input>
-  </splunk-control-group>
 </form>
 
 <form class="splunk-formatter-section" section-label="X-Axis">
@@ -26,10 +19,10 @@
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Display Labels">
+  <splunk-control-group label="Display Ticks">
     <splunk-radio-input name="{{VIZ_NAMESPACE}}.xDisplay" value=true>
-      <option value="true">Show</option>
-      <option value="false">Hide</option>
+      <option value=true>Show</option>
+      <option value=false>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 </form>
@@ -48,10 +41,10 @@
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Display Labels">
+  <splunk-control-group label="Display Ticks">
     <splunk-radio-input name="{{VIZ_NAMESPACE}}.yDisplay" value=true>
-      <option value="true">Show</option>
-      <option value="false">Hide</option>
+      <option value=true>Show</option>
+      <option value=false>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 </form>
