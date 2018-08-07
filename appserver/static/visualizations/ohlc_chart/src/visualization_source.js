@@ -45,21 +45,24 @@ define([
             'This chart only supports numbers'
           );
         }
-        return data;
 
+        return data;
       },
 
       updateView: function(data, config) {
 
-        console.log("raw data?" + data);
+        // console.log("raw data?" + data);
         if (!data) {
           return;
         }
-        var dataSet = data;
-        console.log("dataSet?" + dataSet);
 
+        var dataSet = data
+        // console.log("dataSet?" + dataSet);
+
+        Plotly.purge('ohlcContainer');
 
         $('#' + this.id).empty();
+
 
         // this function extracts a column of an array
         function arrayColumn(arr, n) {
@@ -73,19 +76,25 @@ define([
         var low = arrayColumn(data.rows, 3);
         var open = arrayColumn(data.rows, 4);
 
-        console.log(time);
-        console.log(close);
-        console.log(high);
-        console.log(low);
-        console.log(open);
+        // console.log(time);
+        // console.log(close);
+        // console.log(high);
+        // console.log(low);
+        // console.log(open);
 
         //this is supposed get the info from the format menu
         // var plotType = config[this.getPropertyNamespaceInfo().propertyNamespace + 'plotType'] || 'candlestick';
-        var xTickAngle = config['display.visualizations.custom.candlestick_app.ohlc_chart.xAngle'] || 0;
-        var yTickAngle = config['display.visualizations.custom.candlestick_app.ohlc_chart.yAngle'] || 0;
-        var xDisplayTick = config['display.visualizations.custom.candlestick_app.ohlc_chart.xDisplay'] || true;
-        var yDisplayTick = config['display.visualizations.custom.candlestick_app.ohlc_chart.yDisplay'] || false;
-        var chartTitle = config['display.visualizations.custom.candlestick_app.ohlc_chart.title'] || '';
+        var xTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAngle'] || 0;
+        var yTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAngle'] || 0;
+
+        var modeBar = (config['display.visualizations.custom.candlestick_app.candlestick_chart.mbDisplay'] === 'true');
+        var showXLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] === 'true');
+        var showYLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] === 'true');
+
+        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'];
+        var yAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAxisName'];
+        var incColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.highColor'] || '#008000';
+        var decColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.lowColor'] || '#FF0000';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -96,7 +105,7 @@ define([
 
           decreasing: {
             line: {
-              color: 'red'
+              color: decColor
             }
           },
 
@@ -104,7 +113,7 @@ define([
 
           increasing: {
             line: {
-              color: 'green'
+              color: incColor
             }
           },
 
@@ -121,11 +130,10 @@ define([
 
         //places the data made in the variable chart into the variable data
         var data1 = [trace];
-        console.log("data1" + data1);
+        // console.log("data1" + data1);
 
         // this block sets the prerequisites to display the chart
         var layout = {
-          title: chartTitle,
           margin: {
             r: 10,
             t: 25,
@@ -135,22 +143,28 @@ define([
           showlegend: false,
           xaxis: {
             autorange: true,
-            showticklabels: xDisplayTick,
             tickangle: xTickAngle,
-            title: 'Date',
+            title: xAxisLabel,
             rangeslider: {
               visible: false
             },
+            showticklabels: showXLabel,
             type: 'date'
           },
           yaxis: {
             autorange: true,
-            showticklabels: yDisplayTick,
-            tickangle: yTickAngle
+            showticklabels: showYLabel,
+            tickangle: yTickAngle,
+            title: yAxisLabel
           }
         };
 
-        Plotly.plot('candlestickContainer', data1, layout);
+        // var toggleMb = {displayModeBar: modeBar};
+        console.log(modeBar);
+
+        Plotly.plot('ohlcContainer', data1, layout, {
+          displayModeBar: modeBar
+        });
 
       } //end of layout
     });
