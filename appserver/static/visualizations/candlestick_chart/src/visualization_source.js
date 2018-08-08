@@ -90,11 +90,23 @@ define([
         var modeBar = (config['display.visualizations.custom.candlestick_app.candlestick_chart.mbDisplay'] === 'true');
         var showXLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] === 'true');
         var showYLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] === 'true');
+        var rSlider = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showRSlider'] === 'true');
 
-        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'];
+        var dispOpen = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showOpen'] === 'true');
+        var dispClose = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showClose'] === 'true');
+
+        var openCol = config['display.visualizations.custom.candlestick_app.candlestick_chart.openColor'] || '#1556C5';
+        var closeCol = config['display.visualizations.custom.candlestick_app.candlestick_chart.closeColor'] || '#FFA500';
+
+        var dispLegend = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showLegend'] === 'true');
+
+        var typeChart = config['display.visualizations.custom.candlestick_app.candlestick_chart.chartType'] || 'candlestick';
+
+        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'] || 'Date';
         var yAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAxisName'];
-        var incColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.highColor'] || '#008000';
-        var decColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.lowColor'] || '#FF0000';
+
+        var incColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.highColor'];
+        var decColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.lowColor'];
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -102,7 +114,7 @@ define([
 
           x: time,
           close: close,
-
+          name: 'Data',
           decreasing: {
             line: {
               color: decColor
@@ -123,13 +135,47 @@ define([
 
           low: low,
           open: open,
-          type: 'candlestick',
+          type: typeChart,
           xaxis: 'x',
           yaxis: 'y'
         }; //end of trace
 
+        var traceOpen = {
+          x: time,
+          y: open,
+          name: 'Open',
+          line: {
+            dash: 'dashdot',
+            color: openCol,
+            width: 2
+          },
+          mode: 'lines'
+        };
+
+        var traceClose = {
+          x: time,
+          y: close,
+          name: 'Close',
+          line: {
+            dash: 'dot',
+            color: closeCol,
+            width: 2
+          },
+          mode: 'lines'
+        };
+
+        var data1;
         //places the data made in the variable chart into the variable data
-        var data1 = [trace];
+        if (!dispOpen && !dispClose) {
+          data1 = [trace];
+        } else if (!dispOpen && dispClose) {
+          data1 = [trace, traceClose];
+        } else if (dispOpen && !dispClose) {
+          data1 = [trace, traceOpen];
+        } else {
+          data1 = [trace, traceOpen, traceClose];
+        }
+
         // console.log("data1" + data1);
 
         // this block sets the prerequisites to display the chart
@@ -140,13 +186,13 @@ define([
             b: 40,
             l: 60
           },
-          showlegend: false,
+          showlegend: dispLegend,
           xaxis: {
             autorange: true,
             tickangle: xTickAngle,
             title: xAxisLabel,
             rangeslider: {
-              visible: false
+              visible: rSlider
             },
             showticklabels: showXLabel,
             type: 'date'
@@ -158,9 +204,6 @@ define([
             title: yAxisLabel
           }
         };
-
-        // var toggleMb = {displayModeBar: modeBar};
-        console.log(modeBar);
 
         Plotly.plot('candlestickContainer', data1, layout, {
           displayModeBar: modeBar
