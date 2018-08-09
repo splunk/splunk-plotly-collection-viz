@@ -46,7 +46,7 @@
   </splunk-control-group>
 
   <splunk-control-group label="Display X-Axis labels">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.xDisplay" value='true'>
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.xDisplay" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
@@ -75,7 +75,7 @@
   </splunk-control-group>
 
   <splunk-control-group label="Display Y-Axis labels">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.yDisplay" value='true' >
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.yDisplay" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
@@ -84,27 +84,27 @@
 </form>
 
 <form class="splunk-formatter-section" section-label="Trendlines">
-  <splunk-control-group label="Show trend in Open values">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showOpen" value='false' >
+  <splunk-control-group label="Show trend in High values">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showHigh" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Show trend in Close values">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showClose" value='false' >
+  <splunk-control-group label="Show trend in Low values">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLow" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Open Color">
-    <splunk-color-picker name="{{VIZ_NAMESPACE}}.openColor" value='#1556C5'>
+  <splunk-control-group label="High Color">
+    <splunk-color-picker name="{{VIZ_NAMESPACE}}.thColor" value='#1556C5'>
     </splunk-color-picker>
   </splunk-control-group>
 
-  <splunk-control-group label=" Close Color">
-    <splunk-color-picker name="{{VIZ_NAMESPACE}}.closeColor" value='#FFA500'>
+  <splunk-control-group label=" Low Color">
+    <splunk-color-picker name="{{VIZ_NAMESPACE}}.tlColor" value='#FFA500'>
     </splunk-color-picker>
   </splunk-control-group>
 

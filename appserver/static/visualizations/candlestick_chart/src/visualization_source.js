@@ -77,36 +77,55 @@ define([
         var open = arrayColumn(data.rows, 4);
 
         // console.log(time);
-        // console.log(close);
+        console.log(close);
         // console.log(high);
         // console.log(low);
-        // console.log(open);
+        console.log(open);
+
+        var trendHigh = high;
+        var trendLow = low;
+
+        trendHigh = trendHigh.map(Number);
+        trendLow = trendLow.map(Number);
+        //these blocks of code calculate the simple moving average of the elements in and array and
+        //out put the avgs  in an array also.
+        trendHigh.reduce(function(a, b, i) {
+          return trendHigh[i] = (a + b) / (i + 2);
+        },1);
+
+        trendLow.reduce(function(a, b, i) {
+          return trendLow[i] = (a + b) / (i + 2);
+        },1);
+
+        console.log(trendHigh);
+        console.log(trendLow);
+
+        var sSearches = 'display.visualizations.custom.candlestick_app.candlestick_chart.';
 
         //this is supposed get the info from the format menu
-        // var plotType = config[this.getPropertyNamespaceInfo().propertyNamespace + 'plotType'] || 'candlestick';
-        var xTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAngle'] || 0;
-        var yTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAngle'] || 0;
+        var xTickAngle = config[sSearches + 'xAngle'] || 0,
+          yTickAngle = config[sSearches + 'yAngle'] || 0,
 
-        var modeBar = (config['display.visualizations.custom.candlestick_app.candlestick_chart.mbDisplay'] === 'true');
-        var showXLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] === 'true');
-        var showYLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] === 'true');
-        var rSlider = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showRSlider'] === 'true');
+          modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
+          showXLabel = (config[sSearches + 'xDisplay'] === 'true'),
+          showYLabel = (config[sSearches + 'yDisplay'] === 'true'),
+          rSlider = (config[sSearches + 'showRSlider'] === 'true'),
 
-        var dispOpen = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showOpen'] === 'true');
-        var dispClose = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showClose'] === 'true');
+          dispHigh = (config[sSearches + 'showHigh'] === 'true'),
+          dispLow = (config[sSearches + 'showLow'] === 'true'),
 
-        var openCol = config['display.visualizations.custom.candlestick_app.candlestick_chart.openColor'] || '#1556C5';
-        var closeCol = config['display.visualizations.custom.candlestick_app.candlestick_chart.closeColor'] || '#FFA500';
+          tHighCol = config[sSearches + 'thColor'] || '#1556C5',
+          tLowCol = config[sSearches + 'tlColor'] || '#FFA500',
 
-        var dispLegend = (config['display.visualizations.custom.candlestick_app.candlestick_chart.showLegend'] === 'true');
+          dispLegend = (config[sSearches + 'showLegend'] === 'true') || 'true',
 
-        var typeChart = config['display.visualizations.custom.candlestick_app.candlestick_chart.chartType'] || 'candlestick';
+          typeChart = config[sSearches + 'chartType'] || 'candlestick',
 
-        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'] || 'Date';
-        var yAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAxisName'];
+          xAxisLabel = config[sSearches + 'xAxisName'] || 'Date',
+          yAxisLabel = config[sSearches + 'yAxisName'],
 
-        var incColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.highColor'];
-        var decColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.lowColor'];
+          incColor = config[sSearches + 'highColor'],
+          decColor = config[sSearches + 'lowColor'];
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -140,40 +159,42 @@ define([
           yaxis: 'y'
         }; //end of trace
 
-        var traceOpen = {
+        var traceHighAvg = {
           x: time,
-          y: open,
-          name: 'Open',
+          y: trendHigh,
+          name: 'High',
           line: {
             dash: 'dashdot',
-            color: openCol,
-            width: 2
+            color: tHighCol,
+            width: 3
           },
           mode: 'lines'
         };
+        console.log(traceHighAvg);
 
-        var traceClose = {
+        var traceLowAvg = {
           x: time,
-          y: close,
-          name: 'Close',
+          y: trendLow,
+          name: 'Low',
           line: {
             dash: 'dot',
-            color: closeCol,
-            width: 2
+            color: tLowCol,
+            width: 3
           },
           mode: 'lines'
         };
+        console.log(traceLowAvg);
 
         var data1;
         //places the data made in the variable chart into the variable data
-        if (!dispOpen && !dispClose) {
+        if (!dispHigh && !dispLow) {
           data1 = [trace];
-        } else if (!dispOpen && dispClose) {
-          data1 = [trace, traceClose];
-        } else if (dispOpen && !dispClose) {
-          data1 = [trace, traceOpen];
+        } else if (!dispHigh && dispLow) {
+          data1 = [trace, traceLowAvg];
+        } else if (dispHigh && !dispLow) {
+          data1 = [trace, traceHighAvg];
         } else {
-          data1 = [trace, traceOpen, traceClose];
+          data1 = [trace, traceHighAvg, traceLowAvg];
         }
 
         // console.log("data1" + data1);

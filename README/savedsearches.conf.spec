@@ -14,11 +14,11 @@ display.visualizations.custom.candlestick_app.candlestick_chart.lowColor = <stri
 
 display.visualizations.custom.candlestick_app.candlestick_chart.showRSlider = <string>;
 
-display.visualizations.custom.candlestick_app.candlestick_chart.showOpen = <string>;
-display.visualizations.custom.candlestick_app.candlestick_chart.showClose = <string>;
+display.visualizations.custom.candlestick_app.candlestick_chart.showHigh= <string>;
+display.visualizations.custom.candlestick_app.candlestick_chart.showLow = <string>;
 
-display.visualizations.custom.candlestick_app.candlestick_chart.openColor = <string>;
-display.visualizations.custom.candlestick_app.candlestick_chart.closeColor = <string>;
+display.visualizations.custom.candlestick_app.candlestick_chart.thColor = <string>;
+display.visualizations.custom.candlestick_app.candlestick_chart.tlColor = <string>;
 
 display.visualizations.custom.candlestick_app.candlestick_chart.chartType = <string>;
 
