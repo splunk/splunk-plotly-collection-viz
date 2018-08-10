@@ -126,8 +126,8 @@ define([
           xAxisLabel = config[sSearches + 'xAxisName'] || 'Date',
           yAxisLabel = config[sSearches + 'yAxisName'],
 
-          incColor = config[sSearches + 'highColor'],
-          decColor = config[sSearches + 'lowColor'];
+          incColor = config[sSearches + 'highColor'] || '#008000',
+          decColor = config[sSearches + 'lowColor'] || '#FF0000';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -203,26 +203,27 @@ define([
 
         // this block sets the prerequisites to display the chart
         var layout = {
+          autosize: true,
           margin: {
             r: 10,
-            t: 25,
+            t: 10,
             b: 40,
             l: 60
           },
           showlegend: dispLegend,
           xaxis: {
+            showticklabels: showXLabel,
             autorange: true,
             tickangle: xTickAngle,
             title: xAxisLabel,
             rangeslider: {
               visible: rSlider
             },
-            showticklabels: showXLabel,
             type: 'date'
           },
           yaxis: {
-            autorange: true,
             showticklabels: showYLabel,
+            autorange: true,
             tickangle: yTickAngle,
             title: yAxisLabel
           }

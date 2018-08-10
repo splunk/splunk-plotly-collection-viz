@@ -23,3 +23,12 @@ display.visualizations.custom.candlestick_app.candlestick_chart.tlColor = <strin
 display.visualizations.custom.candlestick_app.candlestick_chart.chartType = <string>;
 
 display.visualizations.custom.candlestick_app.candlestick_chart.showLegend = <string>;
+
+
+
+display.visualizations.custom.candlestick_app.boxplot.mbDisplay = <string>;
+
+display.visualizations.custom.candlestick_app.boxplot.xAxisName = <string>;
+display.visualizations.custom.candlestick_app.boxplot.yAxisName = <string>;
+
+display.visualizations.custom.candlestick_app.boxplot.showLegend = <string>;
