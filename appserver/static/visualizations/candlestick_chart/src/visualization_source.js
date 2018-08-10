@@ -3,7 +3,8 @@ define([
     'underscore',
     'plotly.js',
     'api/SplunkVisualizationBase',
-    'api/SplunkVisualizationUtils'
+    'api/SplunkVisualizationUtils',
+    'sma'
     // Add required assets to this list
   ],
   function(
@@ -11,7 +12,8 @@ define([
     _,
     Plotly,
     SplunkVisualizationBase,
-    SplunkVisualizationUtils
+    SplunkVisualizationUtils,
+    sma
   ) {
 
     return SplunkVisualizationBase.extend({
@@ -77,28 +79,28 @@ define([
         var open = arrayColumn(data.rows, 4);
 
         // console.log(time);
-        console.log(close);
+        // console.log(close);
         // console.log(high);
         // console.log(low);
-        console.log(open);
+        // console.log(open);
 
         var trendHigh = high;
         var trendLow = low;
 
+        //converts the string array to a number array
         trendHigh = trendHigh.map(Number);
         trendLow = trendLow.map(Number);
+
+        // console.log(trendHigh);
+        // console.log(trendLow);
+
         //these blocks of code calculate the simple moving average of the elements in and array and
         //out put the avgs  in an array also.
-        trendHigh.reduce(function(a, b, i) {
-          return trendHigh[i] = (a + b) / (i + 2);
-        },1);
+        trendHigh = sma(trendHigh, 4);
+        trendLow = sma(trendLow, 4);
 
-        trendLow.reduce(function(a, b, i) {
-          return trendLow[i] = (a + b) / (i + 2);
-        },1);
-
-        console.log(trendHigh);
-        console.log(trendLow);
+        // console.log(trendHigh);
+        // console.log(trendLow);
 
         var sSearches = 'display.visualizations.custom.candlestick_app.candlestick_chart.';
 
@@ -170,7 +172,7 @@ define([
           },
           mode: 'lines'
         };
-        console.log(traceHighAvg);
+        // console.log(traceHighAvg);
 
         var traceLowAvg = {
           x: time,
@@ -183,7 +185,7 @@ define([
           },
           mode: 'lines'
         };
-        console.log(traceLowAvg);
+        // console.log(traceLowAvg);
 
         var data1;
         //places the data made in the variable chart into the variable data
