@@ -104,10 +104,25 @@ define([
 
         //this is supposed get the info from the format menu
         var sSearches = 'display.visualizations.custom.candlestick_app.boxplot.';
+
         var modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
           dispLegend = (config[sSearches + 'showLegend'] === 'true'),
+          xTickAngle = config[sSearches + 'xAngle'] || 0,
+          yTickAngle = config[sSearches + 'yAngle'] || 0,
           xAxisLabel = config[sSearches + 'xAxisName'],
           yAxisLabel = config[sSearches + 'yAxisName'];
+
+        var plotMean = config[sSearches + 'boxMean'];
+        if (plotMean === 'true') {
+          plotMean = true;
+        } else
+        if (plotMean === 'false') {
+          plotMean = false;
+        };
+        var plotPoints = config[sSearches + 'boxPoints'];
+        if (plotPoints === 'false') {
+          plotMean = false;
+        };
 
         // create a trace for every group of data
         let groupTraces = groupNum.map((v, i, a) => {
@@ -115,7 +130,8 @@ define([
             y: arrayColumn(groups[i], 1),
             name: groupNum[i],
             x: groupNum[i],
-            boxpoints: 'all',
+            boxmean: plotMean,
+            boxpoints: plotPoints,
             type: 'box'
 
           };
@@ -137,9 +153,7 @@ define([
 
         // this block sets the prerequisites to display the chart
         var layout = {
-          autosize: false,
-          width: 960,
-          height: 250,
+          autosize: true,
           margin: {
             r: 10,
             t: 10,
@@ -149,14 +163,13 @@ define([
           showlegend: dispLegend,
           xaxis: {
             autorange: true,
-            tickangle: 45,
+            tickangle: xTickAngle,
             title: xAxisLabel,
-            type: 'date'
           },
           yaxis: {
             zeroline: false,
             autorange: true,
-            tickangle: 45,
+            tickangle: yTickAngle,
             title: yAxisLabel
           },
           boxmode: 'group'

@@ -109,8 +109,6 @@ define([
           yTickAngle = config[sSearches + 'yAngle'] || 0,
 
           modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
-          showXLabel = (config[sSearches + 'xDisplay'] === 'true'),
-          showYLabel = (config[sSearches + 'yDisplay'] === 'true'),
           rSlider = (config[sSearches + 'showRSlider'] === 'true'),
 
           dispHigh = (config[sSearches + 'showHigh'] === 'true'),
@@ -212,7 +210,6 @@ define([
           },
           showlegend: dispLegend,
           xaxis: {
-            showticklabels: showXLabel,
             autorange: true,
             tickangle: xTickAngle,
             title: xAxisLabel,
@@ -222,7 +219,6 @@ define([
             type: 'date'
           },
           yaxis: {
-            showticklabels: showYLabel,
             autorange: true,
             tickangle: yTickAngle,
             title: yAxisLabel
