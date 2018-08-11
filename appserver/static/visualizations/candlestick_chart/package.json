@@ -22,6 +22,7 @@
     "plotly.js": "^1.39.3",
     "regexp-replace-loader": "^1.0.1",
     "save": "^2.3.2",
+    "sma": "^0.1.0",
     "underscore": "^1.9.1"
   }
 }

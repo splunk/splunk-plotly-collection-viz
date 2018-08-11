@@ -40,5 +40,5 @@ export = system
 [visualizations/candlestick_chart]
 export = system
 
-[visualizations/ohlc_chart]
+[visualizations/boxplot]
 export = system

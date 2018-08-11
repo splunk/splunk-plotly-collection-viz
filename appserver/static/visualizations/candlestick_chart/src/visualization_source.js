@@ -3,7 +3,8 @@ define([
     'underscore',
     'plotly.js',
     'api/SplunkVisualizationBase',
-    'api/SplunkVisualizationUtils'
+    'api/SplunkVisualizationUtils',
+    'sma'
     // Add required assets to this list
   ],
   function(
@@ -11,7 +12,8 @@ define([
     _,
     Plotly,
     SplunkVisualizationBase,
-    SplunkVisualizationUtils
+    SplunkVisualizationUtils,
+    sma
   ) {
 
     return SplunkVisualizationBase.extend({
@@ -82,19 +84,48 @@ define([
         // console.log(low);
         // console.log(open);
 
+        var trendHigh = high;
+        var trendLow = low;
+
+        //converts the string array to a number array
+        trendHigh = trendHigh.map(Number);
+        trendLow = trendLow.map(Number);
+
+        // console.log(trendHigh);
+        // console.log(trendLow);
+
+        //these blocks of code calculate the simple moving average of the elements in and array and
+        //out put the avgs  in an array also.
+        trendHigh = sma(trendHigh, 4);
+        trendLow = sma(trendLow, 4);
+
+        // console.log(trendHigh);
+        // console.log(trendLow);
+
+        var sSearches = 'display.visualizations.custom.candlestick_app.candlestick_chart.';
+
         //this is supposed get the info from the format menu
-        // var plotType = config[this.getPropertyNamespaceInfo().propertyNamespace + 'plotType'] || 'candlestick';
-        var xTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAngle'] || 0;
-        var yTickAngle = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAngle'] || 0;
+        var xTickAngle = config[sSearches + 'xAngle'] || 0,
+          yTickAngle = config[sSearches + 'yAngle'] || 0,
 
-        var modeBar = (config['display.visualizations.custom.candlestick_app.candlestick_chart.mbDisplay'] === 'true');
-        var showXLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.xDisplay'] === 'true');
-        var showYLabel = (config['display.visualizations.custom.candlestick_app.candlestick_chart.yDisplay'] === 'true');
+          modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
+          rSlider = (config[sSearches + 'showRSlider'] === 'true'),
 
-        var xAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.xAxisName'];
-        var yAxisLabel = config['display.visualizations.custom.candlestick_app.candlestick_chart.yAxisName'];
-        var incColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.highColor'] || '#008000';
-        var decColor = config['display.visualizations.custom.candlestick_app.candlestick_chart.lowColor'] || '#FF0000';
+          dispHigh = (config[sSearches + 'showHigh'] === 'true'),
+          dispLow = (config[sSearches + 'showLow'] === 'true'),
+
+          tHighCol = config[sSearches + 'thColor'] || '#1556C5',
+          tLowCol = config[sSearches + 'tlColor'] || '#FFA500',
+
+          dispLegend = (config[sSearches + 'showLegend'] === 'true') || 'true',
+
+          typeChart = config[sSearches + 'chartType'] || 'candlestick',
+
+          xAxisLabel = config[sSearches + 'xAxisName'] || 'Date',
+          yAxisLabel = config[sSearches + 'yAxisName'],
+
+          incColor = config[sSearches + 'highColor'] || '#008000',
+          decColor = config[sSearches + 'lowColor'] || '#FF0000';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -102,7 +133,7 @@ define([
 
           x: time,
           close: close,
-
+          name: 'Data',
           decreasing: {
             line: {
               color: decColor
@@ -123,44 +154,76 @@ define([
 
           low: low,
           open: open,
-          type: 'candlestick',
+          type: typeChart,
           xaxis: 'x',
           yaxis: 'y'
         }; //end of trace
 
+        var traceHighAvg = {
+          x: time,
+          y: trendHigh,
+          name: 'High',
+          line: {
+            dash: 'dashdot',
+            color: tHighCol,
+            width: 3
+          },
+          mode: 'lines'
+        };
+        // console.log(traceHighAvg);
+
+        var traceLowAvg = {
+          x: time,
+          y: trendLow,
+          name: 'Low',
+          line: {
+            dash: 'dot',
+            color: tLowCol,
+            width: 3
+          },
+          mode: 'lines'
+        };
+        // console.log(traceLowAvg);
+
+        var data1;
         //places the data made in the variable chart into the variable data
-        var data1 = [trace];
+        if (!dispHigh && !dispLow) {
+          data1 = [trace];
+        } else if (!dispHigh && dispLow) {
+          data1 = [trace, traceLowAvg];
+        } else if (dispHigh && !dispLow) {
+          data1 = [trace, traceHighAvg];
+        } else {
+          data1 = [trace, traceHighAvg, traceLowAvg];
+        }
+
         // console.log("data1" + data1);
 
         // this block sets the prerequisites to display the chart
         var layout = {
+          autosize: true,
           margin: {
             r: 10,
-            t: 25,
+            t: 10,
             b: 40,
             l: 60
           },
-          showlegend: false,
+          showlegend: dispLegend,
           xaxis: {
             autorange: true,
             tickangle: xTickAngle,
             title: xAxisLabel,
             rangeslider: {
-              visible: false
+              visible: rSlider
             },
-            showticklabels: showXLabel,
             type: 'date'
           },
           yaxis: {
             autorange: true,
-            showticklabels: showYLabel,
             tickangle: yTickAngle,
             title: yAxisLabel
           }
         };
-
-        // var toggleMb = {displayModeBar: modeBar};
-        console.log(modeBar);
 
         Plotly.plot('candlestickContainer', data1, layout, {
           displayModeBar: modeBar

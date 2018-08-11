@@ -10,9 +10,23 @@
   </splunk-control-group>
 
   <splunk-control-group label="Display Plotly Mode Bar">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Display Legend">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLegend" value='true'>
+      <option value='true'>Show</option>
+      <option value='false'>Hide</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Chart Type">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.chartType" value='candlestick'>
+      <option value='candlestick'>Candlestick</option>
+      <option value='ohlc'>OHLC</option>
     </splunk-radio-input>
   </splunk-control-group>
 </form>
@@ -31,8 +45,8 @@
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Display X-Axis labels">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.xDisplay">
+  <splunk-control-group label="Display X-Axis RangeSlider">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showRSlider" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
@@ -53,11 +67,30 @@
     </splunk-radio-input>
   </splunk-control-group>
 
-  <splunk-control-group label="Display Y-Axis labels">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.yDisplay">
+</form>
+<form class="splunk-formatter-section" section-label="Trendlines">
+  <splunk-control-group label="Show trend in High values">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showHigh" value='false'>
       <option value='true'>Show</option>
       <option value='false'>Hide</option>
     </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Show trend in Low values">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLow" value='false'>
+      <option value='true'>Show</option>
+      <option value='false'>Hide</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="High Color">
+    <splunk-color-picker name="{{VIZ_NAMESPACE}}.thColor" value='#1556C5'>
+    </splunk-color-picker>
+  </splunk-control-group>
+
+  <splunk-control-group label=" Low Color">
+    <splunk-color-picker name="{{VIZ_NAMESPACE}}.tlColor" value='#FFA500'>
+    </splunk-color-picker>
   </splunk-control-group>
 
 </form>
