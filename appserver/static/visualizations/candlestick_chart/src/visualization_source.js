@@ -20,10 +20,13 @@ define([
 
       initialize: function() {
         // Save this.$el for convenience
-        this.$el = $(this.el);
 
+        // Handle multiple Graphs
+        this.__uniqueID = Math.floor(Math.random() * 100000);
+        
+        this.$el = $(this.el);
         // Add a css selector class
-        this.$el.attr('id', 'candlestickContainer');
+        this.$el.attr('id', 'candlestickContainer' + this.__uniqueID);
       },
 
       getInitialDataParams: function() {
@@ -61,7 +64,7 @@ define([
         var dataSet = data
         // console.log("dataSet?" + dataSet);
 
-        Plotly.purge('candlestickContainer');
+        Plotly.purge('candlestickContainer' + this.__uniqueID);
 
         $('#' + this.id).empty();
 
@@ -225,7 +228,7 @@ define([
           }
         };
 
-        Plotly.plot('candlestickContainer', data1, layout, {
+        Plotly.plot('candlestickContainer'  + this.__uniqueID, data1, layout, {
           displayModeBar: modeBar
         });
 
