@@ -1,184 +1,177 @@
 define([
-    'jquery',
-    'underscore',
-    'plotly.js',
-    'api/SplunkVisualizationBase',
-    'api/SplunkVisualizationUtils'
-    // Add required assets to this list
-  ],
-  function(
-    $,
-    _,
-    Plotly,
-    SplunkVisualizationBase,
-    SplunkVisualizationUtils
-  ) {
+  'jquery',
+  'underscore',
+  'plotly.js-dist',
+  'api/SplunkVisualizationBase',
+  'api/SplunkVisualizationUtils'
+  // Add required assets to this list
+],
+function(
+  $,
+  _,
+  Plotly,
+  SplunkVisualizationBase,
+  SplunkVisualizationUtils
+) {
 
-    return SplunkVisualizationBase.extend({
+  return SplunkVisualizationBase.extend({
 
-      initialize: function() {
-        // Save this.$el for convenience
-        this.$el = $(this.el);
+    initialize: function() {
+      // Save this.$el for convenience
+      this.$el = $(this.el);
 
-        // Add a css selector class
-        this.$el.attr('id', 'boxplotContainer');
-      },
+      // Add a css selector class
+      this.$el.attr('id', 'boxplotContainer');
+    },
 
-      getInitialDataParams: function() {
-        return ({
-          outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
-          count: 10000
-        });
-      },
+    getInitialDataParams: function() {
+      return ({
+        outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
+        count: 10000
+      });
+    },
 
-      // this  for mat data method make sure that the data passed in
-      formatData: function(data, config) {
+    formatData: function(data, config) {
+      // Expects to have 2 columns corresponding to 2 fields:
+      // (0) box_id
+      // (1) value
 
-        //This returns nothing if there is no data passed in
-        if (data.rows.length < 1) {
-          return;
+      var fields = data.fields;
+      var rows = data.rows;
+
+      //This returns nothing if there is no data passed in
+      if (rows.length < 1) {
+        return;
+      }
+
+      //This checks if all data being passed in are numbers and displays an error if not.
+      if (_.isNaN(data)) {
+        throw new SplunkVisualizationBase.VisualizationError(
+          'This chart only supports numbers'
+        );
+      }
+
+      var boxGroupLabels = rows.map(x => x[0])
+                               .filter(function(x, i, rows){
+                                  return rows.indexOf(x) === i;
+                               });
+
+      var boxGroupIds = Array.from({length: boxGroupLabels.length}, function(v, k){
+                                  value = k+1;
+                                  return value.toString();
+                              });
+
+      var groupValues = [];
+
+      _.each(boxGroupLabels, function(groupid) {
+          // get all objects with same groupid
+          var arr = rows.filter(function(el){
+                            return el[0] === groupid;
+                         });
+          groupValues.push(arr.map(x => x[1]));
+      });
+
+      // console.log(data);
+      // return data;
+      return {
+        "fields": fields,
+        "content": {
+          "ids": boxGroupIds,
+          "labels": boxGroupLabels,
+          "values": groupValues
         }
+      }
+    },
 
-        //This checks if all data being passed in are numbers and displays an error if not.
-        if (_.isNaN(data)) {
-          throw new SplunkVisualizationBase.VisualizationError(
-            'This chart only supports numbers'
-          );
-        }
+    updateView: function(data, config) {
+      if (!data) {
+        return;
+      }
 
-        return data;
-      },
+      var dataset = data.content,
+          boxIds = dataset.ids, // e.g. [1,2,3,4,5]
+          boxLabels = dataset.labels,
+          boxValues = dataset.values;
 
-      updateView: function(data, config) {
+      //get info from config
+      var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
+      var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
+      var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
+      var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
+      var xAxisLabel = this._getEscapedProperty('xAxisName', config) || "x";
+      var yAxisLabel = this._getEscapedProperty('yAxisName', config) || "y";
 
-        // console.log("raw data?" + data);
-        if (!data) {
-          return;
-        }
+      var plotMean = this._getBoxDistribution(this._getEscapedProperty('boxMean', config) || "none");
+      var plotPoints = this._getBoxOutliers(this._getEscapedProperty('boxPoints', config) || "none");
 
-        var dataSet = data
-        // console.log("dataSet?" + dataSet);
+      // Cleanup previous data
+      Plotly.purge('boxplotContainer');
+      $('#' + this.id).empty();
 
-        Plotly.purge('boxplotContainer');
-
-        $('#' + this.id).empty();
-
-        // this function extracts a column of an array
-        function arrayColumn(arr, n) {
-          return arr.map(x => x[n]);
-        }
-        // retuens only the unique files in an array
-        function uniqueVal(value, index, self) {
-          return self.indexOf(value) === index;
-        }
-        //filter the arrays
-        function getFilteredArray(array, key, value) {
-          return array.filter(function(e) {
-            return e[key] == value;
-          });
-        }
-        //create an array for each unique group
-        function arrGenerator(arr) {
-          return arr.map(x => groups[x] = []);
-        }
-        //places data to be plotted into their respective groups
-        function fileData(arr, n) {
-          return arr.map(x => arr[n] = getFilteredArray(data.rows, 0, ++n));
-        }
-
-        //Place arrays in variables
-        var groupNum = arrayColumn(data.rows, 0);
-        var yValue = arrayColumn(data.rows, 1);
-
-        groupNum = groupNum.filter(uniqueVal);
-        yValue = yValue.filter(uniqueVal);
-
-
-        //this block of code creates a new array for every value in the groupNum
-        var groups = [];
-
-        groups = arrGenerator(groupNum);
-
-        groups = fileData(groups, 0);
-
-
-        //this is supposed get the info from the format menu
-        var sSearches = 'display.visualizations.custom.candlestick_app.boxplot.';
-
-        var modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
-          dispLegend = (config[sSearches + 'showLegend'] === 'true'),
-          xTickAngle = config[sSearches + 'xAngle'] || 0,
-          yTickAngle = config[sSearches + 'yAngle'] || 0,
-          xAxisLabel = config[sSearches + 'xAxisName'],
-          yAxisLabel = config[sSearches + 'yAxisName'];
-
-        var plotMean = config[sSearches + 'boxMean'];
-        if (plotMean === 'true') {
-          plotMean = true;
-        } else
-        if (plotMean === 'false') {
-          plotMean = false;
+      // create a trace for every group of data
+      let dataInput = boxIds.map((v, i, a) => {
+        return {
+          type: 'box',
+          y: boxValues[i],
+          name: boxLabels[i],
+          boxmean: plotMean,
+          boxpoints: plotPoints
         };
-        var plotPoints = config[sSearches + 'boxPoints'];
-        if (plotPoints === 'false') {
-          plotMean = false;
-        };
+      });
+      // console.log(dataInput);
 
-        // create a trace for every group of data
-        let groupTraces = groupNum.map((v, i, a) => {
-          return {
-            y: arrayColumn(groups[i], 1),
-            name: groupNum[i],
-            x: groupNum[i],
-            boxmean: plotMean,
-            boxpoints: plotPoints,
-            type: 'box'
+      // this block sets the prerequisites to display the chart
+      var layout = {
+        autosize: true,
+        margin: {
+          r: 10,
+          t: 10,
+          b: 40,
+          l: 60
+        },
+        showlegend: dispLegend,
+        xaxis: {
+          autorange: true,
+          tickangle: xTickAngle,
+          title: xAxisLabel,
+        },
+        yaxis: {
+          zeroline: false,
+          autorange: true,
+          tickangle: yTickAngle,
+          title: yAxisLabel
+        },
+        boxmode: 'group'
+      };
 
-          };
-        });
+      // Plotting the chart
+      Plotly.plot('boxplotContainer', dataInput, layout, {
+        displayModeBar: modeBar
+      });
 
-        // console.log(groupTraces);
+    },
 
-        //convert array to list of objects
-        //this is needed to ensure that the data is in the
-        //proper format to be plotted.
-        var objTraces = groupTraces.reduce(function(acc, cur, i) {
-          acc[i] = cur;
-          return acc;
-        }, []);
+    _getBoxDistribution: function(value) {
+        if (value === "sd") {
+            return value;
+        }
 
-        var data1 = objTraces;
-        // console.log(data1);
-        //places the data made in the variable chart into the variable data
+        return value === "mean";
+    },
 
-        // this block sets the prerequisites to display the chart
-        var layout = {
-          autosize: true,
-          margin: {
-            r: 10,
-            t: 10,
-            b: 40,
-            l: 60
-          },
-          showlegend: dispLegend,
-          xaxis: {
-            autorange: true,
-            tickangle: xTickAngle,
-            title: xAxisLabel,
-          },
-          yaxis: {
-            zeroline: false,
-            autorange: true,
-            tickangle: yTickAngle,
-            title: yAxisLabel
-          },
-          boxmode: 'group'
-        };
+    _getBoxOutliers : function(value) {
+        if (value !== "none") {
+           return value;
+        }
 
-        Plotly.plot('boxplotContainer', data1, layout, {
-          displayModeBar: modeBar
-        });
+        return value === "none";
+    },
 
-      } //end of layout
-    });
+    _getEscapedProperty: function(name, config) {
+        var propertyValue = config[this.getPropertyNamespaceInfo().propertyNamespace + name];
+        if (propertyValue !== undefined ) propertyValue = propertyValue.replace(/"/g, '');
+        return SplunkVisualizationUtils.escapeHtml(propertyValue);
+    }
+
   });
+});
