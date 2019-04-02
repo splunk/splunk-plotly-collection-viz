@@ -35,6 +35,7 @@ Sample SPL Search for BoxPlot:
 | makeresults count=100
 | streamstats count as group_num
 | eval group_num = ((group_num-1) % 5)+1
+| eval group_num = "Test ".group_num 
 | eval y=random() %51
 | fields - _time
 ```
