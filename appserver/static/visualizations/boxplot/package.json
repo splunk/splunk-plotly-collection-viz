@@ -4,7 +4,7 @@
   "description": "Chart Visualizations based on Plotly.js for Splunk",
   "main": "visualization.js",
   "scripts": {
-    "build": "node ./node_modules/webpack/bin/webpack.js",
+    "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
     "watch": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
