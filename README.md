@@ -1,6 +1,5 @@
 # Plotly.js Custom Vizualization Project - Splunk SE Summer Internship 2018
-The plotly.js visualization library packaged as a Splunk application to expose the charts via the Splunk Custom Visualization Framework
-
+The [plotly.js](https://github.com/plotly/plotly.js/) charting library has been packaged into a Splunk application to expose the charts via the Splunk Custom Visualization Framework
 
 Tamar A. Zamba -  Lead Developer 
 SE Intern, Plano, TX
@@ -10,7 +9,19 @@ Analytics Architect,  Washington, D.C.
 
 This modular visualization app includes:
 1. Candlestick/OHLC Chart -  for Stocks and Financial Data.    [Candlestick/OHLC source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/candlestick_chart/src/visualization_source.js)
+2. Box Plot Chart - for displaying Statistical Data.    [BoxPlot source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/boxplot/src/visualization_source.js)
 
+## Installation
+- [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
+- Unpack/Install Splunk by running the downloaded files.
+- Follow the instruction on the screen.
+
+Download the app **plotly_custom_viz_splunk** from **GitHub** and installed in your Splunk platform. Access your Splunk instance via terminal and:
+- browse to your apps directory `$SPLUNK_HOME/etc/apps/`
+- download the app from github `git clone https://github.com/tmuth/plotly_custom_viz_splunk`
+- Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
+
+## Usage
 Sample SPL Search for Candlestick/OHLC:
 
 ```sh
@@ -27,7 +38,6 @@ Sample SPL Search for Candlestick/OHLC:
 | fields - sign,count
 ```
 
-2. Box Plot Chart - for displaying Statistical Data.    [BoxPlot source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/boxplot/src/visualization_source.js)
 
 Sample SPL Search for BoxPlot:
 
@@ -39,4 +49,3 @@ Sample SPL Search for BoxPlot:
 | eval y=random() %51
 | fields - _time
 ```
-
