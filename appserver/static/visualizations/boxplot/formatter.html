@@ -1,16 +1,16 @@
 <form class="splunk-formatter-section" section-label="General">
 
   <splunk-control-group label="Display Plotly Mode Bar">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay" value='false'>
-      <option value='true'>Show</option>
-      <option value='false'>Hide</option>
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay" value='0'>
+      <option value='1'>Show</option>
+      <option value='0'>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 
   <splunk-control-group label="Display Legend">
-    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLegend" value='true'>
-      <option value='true'>Show</option>
-      <option value='false'>Hide</option>
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLegend" value='1'>
+      <option value='1'>Show</option>
+      <option value='0'>Hide</option>
     </splunk-radio-input>
   </splunk-control-group>
 </form>
@@ -45,16 +45,16 @@
 
 <form class="splunk-formatter-section" section-label="Display Statistics">
   <splunk-control-group label="Plot Mean/SD">
-    <splunk-select name="{{VIZ_NAMESPACE}}.boxMean" value='false'>
-      <option value='false'>None</option>
-      <option value='true'>Mean</option>
+    <splunk-select name="{{VIZ_NAMESPACE}}.boxMean" value='none'>
+      <option value='none'>None</option>
+      <option value='mean'>Mean</option>
       <option value='sd'>Standard Deviation</option>
     </splunk-select>
   </splunk-control-group>
 
   <splunk-control-group label="Outliers">
-    <splunk-select name="{{VIZ_NAMESPACE}}.boxPoints" value='false'>
-      <option value='false'>None</option>
+    <splunk-select name="{{VIZ_NAMESPACE}}.boxPoints" value='none'>
+      <option value='none'>None</option>
       <option value='all'>Plot Points</option>
       <option value='Outliers'>Only Outliers</option>
       <option value='suspectedoutliers'>Suspected Outliers</option>
