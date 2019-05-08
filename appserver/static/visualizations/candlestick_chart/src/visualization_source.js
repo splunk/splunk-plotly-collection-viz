@@ -1,7 +1,7 @@
 define([
     'jquery',
     'underscore',
-    'plotly.js',
+    'plotly.js-dist',
     'api/SplunkVisualizationBase',
     'api/SplunkVisualizationUtils',
     'sma'
@@ -26,7 +26,7 @@ define([
         
         this.$el = $(this.el);
         // Add a css selector class
-        this.$el.attr('id', 'candlestickContainer' + this.__uniqueID);
+        this.$el.attr('id', 'candlestickContainer_' + this.__uniqueID);
       },
 
       getInitialDataParams: function() {
@@ -64,7 +64,7 @@ define([
         var dataSet = data
         // console.log("dataSet?" + dataSet);
 
-        Plotly.purge('candlestickContainer' + this.__uniqueID);
+        Plotly.purge('candlestickContainer_' + this.__uniqueID);
 
         $('#' + this.id).empty();
 
@@ -105,30 +105,27 @@ define([
         // console.log(trendHigh);
         // console.log(trendLow);
 
-        var sSearches = 'display.visualizations.custom.candlestick_app.candlestick_chart.';
+        var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
+        var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
+        var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
+        var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
+        var xAxisLabel = this._getEscapedProperty('xAxisName', config) || "x";
+        var yAxisLabel = this._getEscapedProperty('yAxisName', config) || "y";
 
-        //this is supposed get the info from the format menu
-        var xTickAngle = config[sSearches + 'xAngle'] || 0,
-          yTickAngle = config[sSearches + 'yAngle'] || 0,
-
-          modeBar = (config[sSearches + 'mbDisplay'] === 'true'),
-          rSlider = (config[sSearches + 'showRSlider'] === 'true'),
-
-          dispHigh = (config[sSearches + 'showHigh'] === 'true'),
-          dispLow = (config[sSearches + 'showLow'] === 'true'),
-
-          tHighCol = config[sSearches + 'thColor'] || '#1556C5',
-          tLowCol = config[sSearches + 'tlColor'] || '#FFA500',
-
-          dispLegend = (config[sSearches + 'showLegend'] === 'true') || 'true',
-
-          typeChart = config[sSearches + 'chartType'] || 'candlestick',
-
-          xAxisLabel = config[sSearches + 'xAxisName'] || 'Date',
-          yAxisLabel = config[sSearches + 'yAxisName'],
-
-          incColor = config[sSearches + 'highColor'] || '#008000',
-          decColor = config[sSearches + 'lowColor'] || '#FF0000';
+        var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
+        var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
+        var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
+        var rSlider = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showRSlider', config));
+        var dispHigh = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showHigh', config));
+        var dispLow = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLow', config));
+        var tHighCol = this._getEscapedProperty('thColor', config) || '#1556C5';
+        var tLowCol = this._getEscapedProperty('tlColor', config) || '#FFA500';
+        var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
+        var typeChart = this._getEscapedProperty('chartType', config) || 'candlestick';
+        var xAxisLabel = this._getEscapedProperty('xAxisName', config) || 'Date';
+        var yAxisLabel = this._getEscapedProperty('yAxisName', config);
+        var incColor = this._getEscapedProperty('highColor', config) || '#008000';
+        var decColor = this._getEscapedProperty('lowColor', config) || '#FF0000';
 
 
         //this block traces the chart variables and  sets the asethetics
@@ -228,10 +225,16 @@ define([
           }
         };
 
-        Plotly.plot('candlestickContainer'  + this.__uniqueID, data1, layout, {
+        Plotly.plot('candlestickContainer_'  + this.__uniqueID, data1, layout, {
           displayModeBar: modeBar
         });
 
-      } //end of layout
+      }
+
+      _getEscapedProperty: function(name, config) {
+        var propertyValue = config[this.getPropertyNamespaceInfo().propertyNamespace + name];
+        if (propertyValue !== undefined ) propertyValue = propertyValue.replace(/"/g, '');
+        return SplunkVisualizationUtils.escapeHtml(propertyValue);
+      }
     });
   });
