@@ -31,80 +31,53 @@ define([
 
       getInitialDataParams: function() {
         return ({
-          outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
+          outputMode: SplunkVisualizationBase.COLUMN_MAJOR_OUTPUT_MODE,
           count: 10000
         });
       },
 
       // this  for mat data method make sure that the data passed in
       formatData: function(data, config) {
+        // Expects data
+        // <basesearch> | table _time, open, close, low, high
 
         //This returns nothing if there is no data passed in
-        if (data.rows.length < 1) {
+        if (data.columns.length < 1) {
           return;
         }
 
         //This checks if all data being passed in are numbers and displays an error if not.
-        if (_.isNaN(data)) {
-          throw new SplunkVisualizationBase.VisualizationError(
-            'This chart only supports numbers'
-          );
-        }
+        // if (_.isNaN(data)) {
+        //   throw new SplunkVisualizationBase.VisualizationError(
+        //     'This chart only supports numbers'
+        //   );
+        // }
 
-        return data;
+        var columns = data.columns,
+            retData = {};
+
+        $.each(data.fields, function(i, field){
+            retData[field.name.toLowerCase()] = columns[i];
+        });
+
+        return retData;
       },
 
       updateView: function(data, config) {
 
-        // console.log("raw data?" + data);
         if (!data) {
           return;
         }
 
-        var dataSet = data
-        // console.log("dataSet?" + dataSet);
+        var time = data._time,
+            open = data.open,
+            close = data.close,
+            high = data.high,
+            low = data.low,
+            trendHigh = high,
+            trendLow = low;
 
-        Plotly.purge('candlestickContainer_' + this.__uniqueID);
-
-        $('#' + this.id).empty();
-
-
-        // this function extracts a column of an array
-        function arrayColumn(arr, n) {
-          return arr.map(x => x[n]);
-        }
-
-        //Place arrays in variables
-        var time = arrayColumn(data.rows, 0);
-        var close = arrayColumn(data.rows, 1);
-        var high = arrayColumn(data.rows, 2);
-        var low = arrayColumn(data.rows, 3);
-        var open = arrayColumn(data.rows, 4);
-
-        // console.log(time);
-        // console.log(close);
-        // console.log(high);
-        // console.log(low);
-        // console.log(open);
-
-        var trendHigh = high;
-        var trendLow = low;
-
-        //converts the string array to a number array
-        trendHigh = trendHigh.map(Number);
-        trendLow = trendLow.map(Number);
-
-        // console.log(trendHigh);
-        // console.log(trendLow);
-
-        //these blocks of code calculate the simple moving average of the elements in and array and
-        //out put the avgs  in an array also.
-        trendHigh = sma(trendHigh, 4);
-        trendLow = sma(trendLow, 4);
-
-        // console.log(trendHigh);
-        // console.log(trendLow);
-
+        // Get info from config
         var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
         var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
         var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
@@ -127,6 +100,24 @@ define([
         var incColor = this._getEscapedProperty('highColor', config) || '#008000';
         var decColor = this._getEscapedProperty('lowColor', config) || '#FF0000';
 
+        // Cleanup previous data
+        Plotly.purge('candlestickContainer_' + this.__uniqueID);
+        $('#' + this.id).empty();
+
+        //converts the string array to a number array
+        trendHigh = trendHigh.map(Number);
+        trendLow = trendLow.map(Number);
+
+        // console.log(trendHigh);
+        // console.log(trendLow);
+
+        //these blocks of code calculate the simple moving average of the elements in and array and
+        //out put the avgs  in an array also.
+        trendHigh = sma(trendHigh, 4);
+        trendLow = sma(trendLow, 4);
+
+        // console.log(trendHigh);
+        // console.log(trendLow);
 
         //this block traces the chart variables and  sets the asethetics
         var trace = {
@@ -225,11 +216,12 @@ define([
           }
         };
 
+        // Plotting the chart
         Plotly.plot('candlestickContainer_'  + this.__uniqueID, data1, layout, {
           displayModeBar: modeBar
         });
 
-      }
+      },
 
       _getEscapedProperty: function(name, config) {
         var propertyValue = config[this.getPropertyNamespaceInfo().propertyNamespace + name];
