@@ -4,7 +4,8 @@ define([
     'plotly.js-dist',
     'api/SplunkVisualizationBase',
     'api/SplunkVisualizationUtils',
-    'sma'
+    'sma',
+    'exponential-moving-average'
     // Add required assets to this list
   ],
   function(
@@ -13,18 +14,35 @@ define([
     Plotly,
     SplunkVisualizationBase,
     SplunkVisualizationUtils,
-    sma
+    sma,
+    ema
   ) {
+
+    var CURRENCY_PAIR_FIELDNAME = "currencypair";
+    var EMA8_FIELDNAME = '8pointema';
+    var EMA20_FIELDNAME = '20pointema';
+    var SMA4_FIELDNAME = '4pointsma';
+    var COLORS = {
+      'decrease': '#FF0000',
+      'increase': '#008000',
+      'trendlines': {
+        [EMA8_FIELDNAME]: '#0140AD',
+        [EMA20_FIELDNAME]: '#FF8026',
+        [SMA4_FIELDNAME]: '#9B1232'
+      }
+    };
+
+    var isDarkTheme = SplunkVisualizationUtils.getCurrentTheme &&
+                      SplunkVisualizationUtils.getCurrentTheme() === 'dark';
 
     return SplunkVisualizationBase.extend({
 
       initialize: function() {
-        // Save this.$el for convenience
-
         // Handle multiple Graphs
         this.__uniqueID = Math.floor(Math.random() * 100000);
         
         this.$el = $(this.el);
+
         // Add a css selector class
         this.$el.attr('id', 'candlestickContainer_' + this.__uniqueID);
       },
@@ -39,7 +57,7 @@ define([
       // this  for mat data method make sure that the data passed in
       formatData: function(data, config) {
         // Expects data
-        // <basesearch> | table _time, open, close, low, high
+        // <basesearch> | table _time, open, close, low, high, [currencypair], [20pointEMA], [8pointEMA], [4pointSMA]
 
         //This returns nothing if there is no data passed in
         if (data.columns.length < 1) {
@@ -57,6 +75,10 @@ define([
             retData = {};
 
         $.each(data.fields, function(i, field){
+            if (CURRENCY_PAIR_FIELDNAME === field.name.toLowerCase()) {
+                retData[field.name.toLowerCase()] = $.unique(columns[i])[0];
+                return true;
+            }
             retData[field.name.toLowerCase()] = columns[i];
         });
 
@@ -73,133 +95,111 @@ define([
             open = data.open,
             close = data.close,
             high = data.high,
-            low = data.low,
-            trendHigh = high,
-            trendLow = low;
+            low = data.low;
+
+        var title = data.hasOwnProperty(CURRENCY_PAIR_FIELDNAME) ?
+                        data[CURRENCY_PAIR_FIELDNAME] : '<CurrencyPair>';
 
         // Get info from config
         var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
         var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
-        var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
-        var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
-        var xAxisLabel = this._getEscapedProperty('xAxisName', config) || "x";
-        var yAxisLabel = this._getEscapedProperty('yAxisName', config) || "y";
+        var rSlider = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showRSlider', config));
+
+        var typeChart = this._getEscapedProperty('chartType', config) || 'candlestick';
 
         var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
         var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
-        var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
-        var rSlider = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showRSlider', config));
-        var dispHigh = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showHigh', config));
-        var dispLow = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLow', config));
-        var tHighCol = this._getEscapedProperty('thColor', config) || '#1556C5';
-        var tLowCol = this._getEscapedProperty('tlColor', config) || '#FFA500';
-        var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
-        var typeChart = this._getEscapedProperty('chartType', config) || 'candlestick';
-        var xAxisLabel = this._getEscapedProperty('xAxisName', config) || 'Date';
+        var xAxisLabel = this._getEscapedProperty('xAxisName', config) || "Date";
         var yAxisLabel = this._getEscapedProperty('yAxisName', config);
-        var incColor = this._getEscapedProperty('highColor', config) || '#008000';
-        var decColor = this._getEscapedProperty('lowColor', config) || '#FF0000';
+
+        var showTrendEMA = this._getTrendline(this._getEscapedProperty('showEMA', config) || "none");
+        var showTrendSMA = this._getTrendline(this._getEscapedProperty('showSMA', config) || "none");
 
         // Cleanup previous data
         Plotly.purge('candlestickContainer_' + this.__uniqueID);
         $('#' + this.id).empty();
 
-        //converts the string array to a number array
-        trendHigh = trendHigh.map(Number);
-        trendLow = trendLow.map(Number);
-
-        // console.log(trendHigh);
-        // console.log(trendLow);
-
-        //these blocks of code calculate the simple moving average of the elements in and array and
-        //out put the avgs  in an array also.
-        trendHigh = sma(trendHigh, 4);
-        trendLow = sma(trendLow, 4);
-
-        // console.log(trendHigh);
-        // console.log(trendLow);
-
-        //this block traces the chart variables and  sets the asethetics
+        // Trace the chart variables and set style
         var trace = {
+          type: typeChart,
 
           x: time,
-          close: close,
-          name: 'Data',
-          decreasing: {
-            line: {
-              color: decColor
-            }
-          },
+          name: title,
+          hoverinfo: 'x+y',
 
+          open: open,
           high: high,
+          close: close,
+          low: low,
 
           increasing: {
             line: {
-              color: incColor
+              color: COLORS.increase,
+              width: 1
             }
           },
-
-          line: {
-            color: 'black'
+          decreasing: {
+            line: {
+              color: COLORS.decrease,
+              width: 1
+            }
           },
-
-          low: low,
-          open: open,
-          type: typeChart,
-          xaxis: 'x',
-          yaxis: 'y'
-        }; //end of trace
-
-        var traceHighAvg = {
-          x: time,
-          y: trendHigh,
-          name: 'High',
-          line: {
-            dash: 'dashdot',
-            color: tHighCol,
-            width: 3
-          },
-          mode: 'lines'
+          // No need of having this trace in legend
+          showlegend: false
         };
-        // console.log(traceHighAvg);
 
-        var traceLowAvg = {
-          x: time,
-          y: trendLow,
-          name: 'Low',
-          line: {
-            dash: 'dot',
-            color: tLowCol,
-            width: 3
-          },
-          mode: 'lines'
-        };
-        // console.log(traceLowAvg);
+        var chartData = [trace];
+        // Adding Trendlines
+        if (showTrendEMA) {
+          if (this._hasDataField(showTrendEMA)) {
+              // Data available
+              if (showTrendEMA === EMA8_FIELDNAME || showTrendEMA === 'all') {
+                chartData.push(this._getTrendlineTrace(EMA8_FIELDNAME, time, data[EMA8_FIELDNAME]));
+              }
+              if (showTrendEMA === EMA20_FIELDNAME || showTrendEMA === 'all') {
+                chartData.push(this._getTrendlineTrace(EMA20_FIELDNAME, time, data[EMA20_FIELDNAME]));
+              }
 
-        var data1;
-        //places the data made in the variable chart into the variable data
-        if (!dispHigh && !dispLow) {
-          data1 = [trace];
-        } else if (!dispHigh && dispLow) {
-          data1 = [trace, traceLowAvg];
-        } else if (dispHigh && !dispLow) {
-          data1 = [trace, traceHighAvg];
-        } else {
-          data1 = [trace, traceHighAvg, traceLowAvg];
+          } else {
+              // Calculate data depending on data.close
+              if (showTrendEMA === EMA8_FIELDNAME || showTrendEMA === 'all') {
+                chartData.push(this._getTrendlineTrace(EMA8_FIELDNAME, time, this._getEMA8(close)));
+              }
+              if (showTrendEMA === EMA20_FIELDNAME || showTrendEMA === 'all') {
+                chartData.push(this._getTrendlineTrace(EMA20_FIELDNAME, time, this._getEMA20(close)));
+              }
+          }
         }
 
-        // console.log("data1" + data1);
+        if (showTrendSMA) {
+          if (data.hasOwnProperty(showTrendSMA)) {
+              // Data available
+              chartData.push(this._getTrendlineTrace(showTrendSMA, time, data[SMA4_FIELDNAME]));
+          } else {
+              // Calculate data depending on data.close
+              chartData.push(this._getTrendlineTrace(showTrendSMA, time, this._getSMA(close)));
+          }
+        }
+
 
         // this block sets the prerequisites to display the chart
         var layout = {
+          title: title,
           autosize: true,
           margin: {
-            r: 10,
-            t: 10,
-            b: 40,
-            l: 60
+            t: 50
+          },
+          paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
+          plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
+          font: {
+            color: isDarkTheme ? '#F0F0F0' : '#000',
           },
           showlegend: dispLegend,
+          // https://plot.ly/javascript/reference/#layout-legend
+          legend: {
+            bgcolor: isDarkTheme ? '#212527' : '#fff',
+            // Change orientation? https://github.com/plotly/plotly.js/issues/1199
+          },
           xaxis: {
             autorange: true,
             tickangle: xTickAngle,
@@ -217,10 +217,68 @@ define([
         };
 
         // Plotting the chart
-        Plotly.plot('candlestickContainer_'  + this.__uniqueID, data1, layout, {
-          displayModeBar: modeBar
+        // Functions ref. https://plot.ly/javascript/plotlyjs-function-reference/
+        // > config details: https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js
+        Plotly.plot('candlestickContainer_'  + this.__uniqueID, chartData, layout, {
+          displayModeBar: modeBar,
+          displaylogo: false,
+          // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
+          modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d'],
         });
 
+      },
+
+      _getTrendlineTrace: function(name, time, values){
+        return {
+          x: time,
+          y: values,
+
+          hoverinfo: 'x+y',
+          name: name,
+
+          line: {
+            // Ref: https://plot.ly/javascript/reference/#ohlc
+            dash: 'solid',
+            color: COLORS.trendlines[name],
+            width: 1
+          }
+        };
+      },
+
+      _getSMA: function(values) {
+        //converts the string array to a number array
+        values = values.map(Number);
+        // Ref. https://npm.taobao.org/package/sma
+        return sma(values, 4);
+      },
+
+      _getEMA8: function(values) {
+          // Ref. https://github.com/jonschlinkert/exponential-moving-average
+          return ema(values, 8);
+      },
+
+      _getEMA20: function(values) {
+          return ema(values, {
+            range: 20,
+            format: function(num) {
+              return num.toFixed(3);
+            }
+          });
+      },
+
+      _getTrendline : function(value) {
+          if (value === "none") {
+            return false;
+          }
+          return value;
+      },
+
+      _hasDataField: function(requested) {
+        var data = this.getCurrentData();
+        if (requested === 'all') {
+          return data.hasOwnProperty(EMA8_FIELDNAME) && data.hasOwnProperty(EMA20_FIELDNAME);
+        }
+        return data.hasOwnProperty(requested);
       },
 
       _getEscapedProperty: function(name, config) {

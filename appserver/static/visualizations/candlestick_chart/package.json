@@ -4,7 +4,7 @@
   "description": "Visualization app template. Put a description here.",
   "main": "visualization.js",
   "scripts": {
-    "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
+    "build": "node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
     "watch": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
@@ -17,12 +17,12 @@
     "c3": "^0.6.6",
     "d3": "^5.5.0",
     "jquery": "^2.2.4",
-    "nvd3": "^1.8.6",
     "plotly": "^1.0.6",
     "plotly.js-dist": "^1.46.0",
     "regexp-replace-loader": "^1.0.1",
     "save": "^2.3.2",
     "sma": "^0.1.0",
+    "exponential-moving-average": "^1.0.0",
     "underscore": "^1.9.1"
   }
 }
