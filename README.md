@@ -8,7 +8,7 @@ Tyler Muth - Project Manager
 Analytics Architect,  Washington, D.C. 
 
 This modular visualization app includes:
-1. Candlestick/OHLC Chart -  for Stocks and Financial Data.    [Candlestick/OHLC source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/candlestick_chart/src/visualization_source.js)
+1. OHLC Chart -  for Stocks and Financial Data.    [OHLC source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/ohlc/src/visualization_source.js)
 2. Box Plot Chart - for displaying Statistical Data.    [BoxPlot source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/boxplot/src/visualization_source.js)
 
 ## Installation
@@ -22,7 +22,7 @@ Download the app **plotly_custom_viz_splunk** from **GitHub** and installed in y
 - Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
 
 ## Usage
-Sample SPL Search for Candlestick/OHLC:
+Sample SPL Search for OHLC:
 
 ```sh
 | makeresults count=60
@@ -36,6 +36,9 @@ Sample SPL Search for Candlestick/OHLC:
 | eval high=if(open > close,(open*.1)+open,(close*.1)+close)
 | eval low=if(open < close,open-(open*.1),close-(close*.1))
 | fields - sign,count
+| sort _time 
+| trendline ema8(close) AS 8PointEMA ema20(close) AS 20PointEMA 
+| reverse
 ```
 
 
