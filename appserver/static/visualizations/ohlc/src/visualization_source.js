@@ -64,20 +64,23 @@ define([
           return;
         }
 
-        //This checks if all data being passed in are numbers and displays an error if not.
-        // if (_.isNaN(data)) {
-        //   throw new SplunkVisualizationBase.VisualizationError(
-        //     'This chart only supports numbers'
-        //   );
-        // }
-
         var columns = data.columns,
             retData = {};
 
         $.each(data.fields, function(i, field){
             if (CURRENCY_PAIR_FIELDNAME === field.name.toLowerCase()) {
-                retData[field.name.toLowerCase()] = $.unique(columns[i])[0];
+                // Removing null values to avoid errors
+                var filtered = columns[i].filter(function (el) {
+                  return el != null;
+                });
+                retData[field.name.toLowerCase()] = $.unique(filtered)[0];
                 return true;
+            }
+            // Raise if null values found
+            if ($.inArray(null, columns[i]) >= 0 && field.name.toLowerCase().indexOf("point") < 0) {
+              throw new SplunkVisualizationBase.VisualizationError(
+                'Null values for field "' + field.name + '" are not supported'
+              );
             }
             retData[field.name.toLowerCase()] = columns[i];
         });
