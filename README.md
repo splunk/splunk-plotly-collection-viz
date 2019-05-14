@@ -1,27 +1,43 @@
-# Plotly.js Custom Vizualization Project - Splunk SE Summer Internship 2018
-The [plotly.js](https://github.com/plotly/plotly.js/) charting library has been packaged into a Splunk application to expose the charts via the Splunk Custom Visualization Framework
+# Plotly.js Custom Visualizations
+A collection of Splunk modular visualizations based on [plotly.js](https://github.com/plotly/plotly.js/), a JavaScript open-source library used to create interactive charts for finance, engineering and sciences.
 
-Tamar A. Zamba -  Lead Developer 
-SE Intern, Plano, TX
-
-Tyler Muth - Project Manager
-Analytics Architect,  Washington, D.C. 
-
-This modular visualization app includes:
-1. OHLC Chart -  for Stocks and Financial Data.    [OHLC source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/ohlc/src/visualization_source.js)
-2. Box Plot Chart - for displaying Statistical Data.    [BoxPlot source code](https://github.com/tmuth/plotly_custom_viz_splunk/blob/master/appserver/static/visualizations/boxplot/src/visualization_source.js)
+Visualizations included into this collection:
+* OHLC Chart -  for Stocks and Financial Data    ([source code](appserver/static/visualizations/ohlc/src/visualization_source.js))
+* Box Plot Chart - for Statistical Data    ([source code](appserver/static/visualizations/boxplot/src/visualization_source.js))
 
 ## Installation
 - [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
 - Unpack/Install Splunk by running the downloaded files.
 - Follow the instruction on the screen.
 
-Download the app **plotly_custom_viz_splunk** from **GitHub** and installed in your Splunk platform. Access your Splunk instance via terminal and:
+**plotly_custom_viz_splunk** can be downloaded from **GitHub** and installed in your Splunk platform. Access your Splunk instance via terminal and:
 - browse to your apps directory `$SPLUNK_HOME/etc/apps/`
 - download the app from github `git clone https://github.com/tmuth/plotly_custom_viz_splunk`
 - Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
 
 ## Usage
+* Type your search
+* Click on tab `Visualization` and then select either `OHLC Chart` or `Box Plot` among available visualizations
+* Format the visualization as needed
+
+### OHLC Chart
+`<basesearch> | table _time open close high low [currencypair] [8pointEMA] [20pointEMA] [4pointSMA]`
+
+If not provided, default values will be used for optional fields `currencypair`, `8pointEMA`, `20pointEMA` and `4pointEMA`.
+
+> Field names **must** correspond to the ones specified above to be properly handled by the visualization
+
+### Box Plot
+`<basesearch> | table box_name value`
+
+Replace `box_name` and `value` with your fields to start.
+
+| FieldName   | Format  | Description              | Example   |
+|-------------|---------|--------------------------|-----------|
+| `box_name`  | string  | Label of the box         | `A`       |
+| `value`     | numeric | Data forming box dataset | `20`      |
+
+## Examples
 Sample SPL Search for OHLC:
 
 ```sh
@@ -41,6 +57,13 @@ Sample SPL Search for OHLC:
 | reverse
 ```
 
+OHLC - Candlestick
+
+![alt text](OHLC_candlestick.png "OHLC Chart - Candlestick")
+
+OHLC - Bars
+
+![alt text](OHLC_bars.png "OHLC Chart - Bars")
 
 Sample SPL Search for BoxPlot:
 
@@ -52,3 +75,8 @@ Sample SPL Search for BoxPlot:
 | eval y=random() %51
 | fields - _time
 ```
+
+![alt text](boxplot_chart.png "Boxplot Chart")
+
+## License
+This project is licensed under [Splunk Pre-Release Software License Agreement](LICENSE.md).
