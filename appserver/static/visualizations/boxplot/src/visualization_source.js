@@ -14,14 +14,20 @@ function(
   SplunkVisualizationUtils
 ) {
 
+  var isDarkTheme = SplunkVisualizationUtils.getCurrentTheme &&
+                    SplunkVisualizationUtils.getCurrentTheme() === 'dark';
+
   return SplunkVisualizationBase.extend({
 
     initialize: function() {
       // Save this.$el for convenience
       this.$el = $(this.el);
 
+      // Handle multiple Graphs
+      this.__uniqueID = Math.floor(Math.random() * 100000);
+
       // Add a css selector class
-      this.$el.attr('id', 'boxplotContainer');
+      this.$el.attr('id', 'boxplotContainer_' + this.__uniqueID);
     },
 
     getInitialDataParams: function() {
@@ -105,7 +111,7 @@ function(
       var plotPoints = this._getBoxOutliers(this._getEscapedProperty('boxPoints', config) || "none");
 
       // Cleanup previous data
-      Plotly.purge('boxplotContainer');
+      Plotly.purge('boxplotContainer_' + this.__uniqueID);
       $('#' + this.id).empty();
 
       // create a trace for every group of data
@@ -113,6 +119,7 @@ function(
         return {
           type: 'box',
           y: boxValues[i],
+          hoverinfo: 'x+y',
           name: boxLabels[i],
           boxmean: plotMean,
           boxpoints: plotPoints
@@ -124,29 +131,39 @@ function(
       var layout = {
         autosize: true,
         margin: {
-          r: 10,
-          t: 10,
-          b: 40,
-          l: 60
+          t: 50
+        },
+
+        paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        font: {
+          color: isDarkTheme ? '#DCDCDC' : '#444',
+        },
+
+        legend: {
+          bgcolor: isDarkTheme ? '#212527' : '#fff',
         },
         showlegend: dispLegend,
+        
         xaxis: {
           autorange: true,
           tickangle: xTickAngle,
           title: xAxisLabel,
+          gridcolor: isDarkTheme ? "#A6A6A6" : "#eee"
         },
         yaxis: {
           zeroline: false,
           autorange: true,
           tickangle: yTickAngle,
+          gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
           title: yAxisLabel
-        },
-        boxmode: 'group'
+        }
       };
 
       // Plotting the chart
-      Plotly.plot('boxplotContainer', dataInput, layout, {
-        displayModeBar: modeBar
+      Plotly.plot('boxplotContainer_' + this.__uniqueID, dataInput, layout, {
+        displayModeBar: modeBar,
+        displaylogo: false
       });
 
     },

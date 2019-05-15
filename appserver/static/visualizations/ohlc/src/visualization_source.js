@@ -195,7 +195,7 @@ define([
           paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
           plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
           font: {
-            color: isDarkTheme ? '#F0F0F0' : '#000',
+            color: isDarkTheme ? '#DCDCDC' : '#444',
           },
           showlegend: dispLegend,
           // https://plot.ly/javascript/reference/#layout-legend
@@ -210,10 +210,12 @@ define([
             rangeslider: {
               visible: rSlider
             },
+            gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
             type: 'date'
           },
           yaxis: {
             autorange: true,
+            gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
             tickangle: yTickAngle,
             title: yAxisLabel
           }
@@ -226,7 +228,7 @@ define([
           displayModeBar: modeBar,
           displaylogo: false,
           // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-          modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d'],
+          modeBarButtonsToRemove: ['select2d', 'lasso2d'],
         });
 
       },
