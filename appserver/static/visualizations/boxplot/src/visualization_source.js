@@ -20,8 +20,11 @@ function(
       // Save this.$el for convenience
       this.$el = $(this.el);
 
+      // Handle multiple Graphs
+      this.__uniqueID = Math.floor(Math.random() * 100000);
+
       // Add a css selector class
-      this.$el.attr('id', 'boxplotContainer');
+      this.$el.attr('id', 'boxplotContainer_' + this.__uniqueID);
     },
 
     getInitialDataParams: function() {
@@ -105,7 +108,7 @@ function(
       var plotPoints = this._getBoxOutliers(this._getEscapedProperty('boxPoints', config) || "none");
 
       // Cleanup previous data
-      Plotly.purge('boxplotContainer');
+      Plotly.purge('boxplotContainer_' + this.__uniqueID);
       $('#' + this.id).empty();
 
       // create a trace for every group of data
@@ -124,10 +127,7 @@ function(
       var layout = {
         autosize: true,
         margin: {
-          r: 10,
-          t: 10,
-          b: 40,
-          l: 60
+          t: 50
         },
         showlegend: dispLegend,
         xaxis: {
@@ -140,13 +140,13 @@ function(
           autorange: true,
           tickangle: yTickAngle,
           title: yAxisLabel
-        },
-        boxmode: 'group'
+        }
       };
 
       // Plotting the chart
-      Plotly.plot('boxplotContainer', dataInput, layout, {
-        displayModeBar: modeBar
+      Plotly.plot('boxplotContainer_' + this.__uniqueID, dataInput, layout, {
+        displayModeBar: modeBar,
+        displaylogo: false
       });
 
     },
