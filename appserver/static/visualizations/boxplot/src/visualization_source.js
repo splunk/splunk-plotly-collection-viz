@@ -14,6 +14,9 @@ function(
   SplunkVisualizationUtils
 ) {
 
+  var isDarkTheme = SplunkVisualizationUtils.getCurrentTheme &&
+                    SplunkVisualizationUtils.getCurrentTheme() === 'dark';
+
   return SplunkVisualizationBase.extend({
 
     initialize: function() {
@@ -116,6 +119,7 @@ function(
         return {
           type: 'box',
           y: boxValues[i],
+          hoverinfo: 'x+y',
           name: boxLabels[i],
           boxmean: plotMean,
           boxpoints: plotPoints
@@ -129,16 +133,29 @@ function(
         margin: {
           t: 50
         },
+
+        paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        font: {
+          color: isDarkTheme ? '#DCDCDC' : '#444',
+        },
+
+        legend: {
+          bgcolor: isDarkTheme ? '#212527' : '#fff',
+        },
         showlegend: dispLegend,
+        
         xaxis: {
           autorange: true,
           tickangle: xTickAngle,
           title: xAxisLabel,
+          gridcolor: isDarkTheme ? "#A6A6A6" : "#eee"
         },
         yaxis: {
           zeroline: false,
           autorange: true,
           tickangle: yTickAngle,
+          gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
           title: yAxisLabel
         }
       };
