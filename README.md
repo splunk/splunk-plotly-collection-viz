@@ -78,5 +78,3 @@ Sample SPL Search for BoxPlot:
 
 ![alt text](boxplot_chart.png "Boxplot Chart")
 
-## License
-This project is licensed under [Splunk Pre-Release Software License Agreement](LICENSE.md).
