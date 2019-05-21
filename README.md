@@ -4,6 +4,7 @@ A collection of Splunk modular visualizations based on [plotly.js](https://githu
 Visualizations included into this collection:
 * OHLC Chart -  for Stocks and Financial Data    ([source code](appserver/static/visualizations/ohlc/src/visualization_source.js))
 * Box Plot Chart - for Statistical Data    ([source code](appserver/static/visualizations/boxplot/src/visualization_source.js))
+* Multiple Axes Chart - for Advanced Statistical Data Visualizations    ([source code](appserver/static/visualizations/multiple-axes/src/visualization_source.js))
 
 ## Installation
 - [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
@@ -17,7 +18,7 @@ Visualizations included into this collection:
 
 ## Usage
 * Type your search
-* Click on tab `Visualization` and then select either `OHLC Chart` or `Box Plot` among available visualizations
+* Click on tab `Visualization` and then select either `OHLC Chart`, `Box Plot` or `Multiple Axes` among available visualizations
 * Format the visualization as needed
 
 ### OHLC Chart
@@ -36,6 +37,19 @@ Replace `box_name` and `value` with your fields to start.
 |-------------|---------|--------------------------|-----------|
 | `box_name`  | string  | Label of the box         | `A`       |
 | `value`     | numeric | Data forming box dataset | `20`      |
+
+### Multiple Axes Plot
+`<basesearch> | table _time y2-dataset y-dataset1 y-dataset2 y-datasetN`
+
+Replace `_time`, `y2-dataset` and `y-datasetX` with your fields to start.
+
+| FieldName    | Format  | Description                                  | Example               |
+|--------------|---------|----------------------------------------------|-----------------------|
+| `_time`      | date    | Event time reference                         | `2019-05-17 07:30:02` |
+| `y2-dataset` | numeric | Dataset for scatter plot on secondary Y-Axis | `-1.6`                |
+| `y-dataset1` | numeric | Dataset for 1st line plot on regular Y-Axis  | `10`                  |
+| `y-dataset2` | numeric | Dataset for 2nd line plot on regular Y-Axis  | `3`                   |
+| `y-datasetN` | numeric | Dataset for Nth line plot on regular Y-Axis  | `32`                  |
 
 ## Examples
 Sample SPL Search for OHLC:
@@ -77,4 +91,5 @@ Sample SPL Search for BoxPlot:
 ```
 
 ![alt text](boxplot_chart.png "Boxplot Chart")
+
 

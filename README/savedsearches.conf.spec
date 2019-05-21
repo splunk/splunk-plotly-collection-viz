@@ -27,3 +27,15 @@ display.visualizations.custom.boxplot.line_chart.xAxisName = <string>;
 display.visualizations.custom.boxplot.line_chart.yAxisName = <string>;
 
 display.visualizations.custom.boxplot.line_chart.showLegend = <number>;
+
+display.visualizations.custom.multiple-axes.line_chart.mbDisplay = <number>;
+
+display.visualizations.custom.multiple-axes.line_chart.xAngle = <float>;
+display.visualizations.custom.multiple-axes.line_chart.yAngle = <float>;
+display.visualizations.custom.multiple-axes.line_chart.y2Angle = <float>;
+
+display.visualizations.custom.multiple-axes.line_chart.xAxisName = <string>;
+display.visualizations.custom.multiple-axes.line_chart.yAxisName = <string>;
+display.visualizations.custom.multiple-axes.line_chart.y2AxisName = <string>;
+
+display.visualizations.custom.multiple-axes.line_chart.showLegend = <number>;

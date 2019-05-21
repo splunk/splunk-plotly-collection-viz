@@ -42,3 +42,6 @@ export = system
 
 [visualizations/boxplot]
 export = system
+
+[visualizations/multiple-axes]
+export = system
