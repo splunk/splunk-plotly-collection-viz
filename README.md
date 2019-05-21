@@ -92,4 +92,18 @@ Sample SPL Search for BoxPlot:
 
 ![alt text](boxplot_chart.png "Boxplot Chart")
 
+Sample SPL Search for Multiple-Axes:
+```sh
+| makeresults count=60 
+| streamstats count 
+| eval _time=_time-(count*3600) 
+| eval line1=(random() %50) + 1 
+| eval line2=(random() %50) + 1 
+| eval sign=if((random() %2)==0,"-","+") 
+| eval scatter=(((random() %20)/100)*line1) 
+| eval scatter=sign.scatter
+| fields - sign,count 
+| table _time, scatter, line1, line2
+```
 
+![alt text](MultipleAxes_plot.png "Multiple Axes Plot")
