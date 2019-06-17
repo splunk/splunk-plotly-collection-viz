@@ -13,7 +13,7 @@ Visualizations included into this collection:
 
 **plotly_custom_viz_splunk** can be downloaded from **GitHub** and installed in your Splunk platform. Access your Splunk instance via terminal and:
 - browse to your apps directory `$SPLUNK_HOME/etc/apps/`
-- download the app from github `git clone https://github.com/tmuth/plotly_custom_viz_splunk`
+- download the app from github `git clone https://github.com/splunk/splunk-plotly-collection-viz`
 - Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
 
 ## Usage
