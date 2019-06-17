@@ -26,7 +26,7 @@ define([
       'decrease': '#FF0000',
       'increase': '#008000',
       'trendlines': {
-        [EMA8_FIELDNAME]: '#0140AD',
+        [EMA8_FIELDNAME]: '#2DB8BA',
         [EMA20_FIELDNAME]: '#FF8026',
         [SMA4_FIELDNAME]: '#9B1232'
       }
@@ -195,7 +195,7 @@ define([
           paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
           plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
           font: {
-            color: isDarkTheme ? '#DCDCDC' : '#444',
+            color: isDarkTheme ? '#A6A6A6' : '#444',
           },
           showlegend: dispLegend,
           // https://plot.ly/javascript/reference/#layout-legend
@@ -206,18 +206,34 @@ define([
           xaxis: {
             autorange: true,
             tickangle: xTickAngle,
-            title: xAxisLabel,
+            tickfont: {
+              color: isDarkTheme ? "#A6A6A6" : "#444",
+            },
+            title: {
+              text: xAxisLabel,
+              font: {
+                color: isDarkTheme ? "#A6A6A6" : "#444",
+              },
+            },
             rangeslider: {
               visible: rSlider
             },
-            gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
+            gridcolor: isDarkTheme ? "#949494" : "#eee",
             type: 'date'
           },
           yaxis: {
             autorange: true,
-            gridcolor: isDarkTheme ? "#A6A6A6" : "#eee",
+            gridcolor: isDarkTheme ? "#949494" : "#eee",
             tickangle: yTickAngle,
-            title: yAxisLabel
+            tickfont: {
+              color: isDarkTheme ? "#A6A6A6" : "#444",
+            },
+            title: {
+              text: yAxisLabel,
+              font: {
+                color: isDarkTheme ? "#A6A6A6" : "#444",
+              },
+            }
           }
         };
 
@@ -244,8 +260,7 @@ define([
           line: {
             // Ref: https://plot.ly/javascript/reference/#ohlc
             dash: 'solid',
-            color: COLORS.trendlines[name],
-            width: 1
+            color: COLORS.trendlines[name]
           }
         };
       },
