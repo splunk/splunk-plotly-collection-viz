@@ -1,7 +1,7 @@
 {
-  "name": "line_chart",
+  "name": "multiple-axes",
   "version": "1.0.0",
-  "description": "Chart Visualizations based on Plotly.js for Splunk",
+  "description": "Multiple Axes Chart, for advanced statistical data visualizations",
   "main": "visualization.js",
   "scripts": {
     "build": "node ./node_modules/webpack/bin/webpack.js",
@@ -11,15 +11,13 @@
   "author": "Splunk",
   "license": "MIT",
   "devDependencies": {
+    "regexp-replace-loader": "^1.0.1",
     "webpack": "^1.12.6"
   },
   "dependencies": {
-    "c3": "^0.6.6",
-    "d3": "^5.5.0",
-    "jquery": "^2.2.4",
-    "plotly.js-dist": "^1.46.0",
-    "regexp-replace-loader": "^1.0.1",
-    "save": "^2.3.2",
-    "underscore": "^1.9.1"
+    "d3": "^7.0.1",
+    "jquery": ">=3.5.0",
+    "plotly.js-dist": "^2.4.1",
+    "underscore": "^1.12.1"
   }
 }

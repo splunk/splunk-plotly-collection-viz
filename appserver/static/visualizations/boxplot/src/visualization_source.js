@@ -5,8 +5,7 @@ define([
   'api/SplunkVisualizationBase',
   'api/SplunkVisualizationUtils'
   // Add required assets to this list
-],
-function(
+], function (
   $,
   _,
   Plotly,
@@ -161,7 +160,7 @@ function(
       };
 
       // Plotting the chart
-      Plotly.plot('boxplotContainer_' + this.__uniqueID, dataInput, layout, {
+      Plotly.newPlot('boxplotContainer_' + this.__uniqueID, dataInput, layout, {
         displayModeBar: modeBar,
         displaylogo: false
       });

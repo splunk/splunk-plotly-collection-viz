@@ -16,3 +16,8 @@ div[id^='modebar'].modebar .modebar-group {
 .spikeline.crisp[stroke^='rgb'] {
   display: none;
 }
+
+/* Plotly.js modebar Positioning */
+div.modebar-container {
+  right: 1% !important;
+}

@@ -1,27 +1,25 @@
 {
-  "name": "line_chart",
+  "name": "ohlc",
   "version": "1.0.0",
-  "description": "Visualization app template. Put a description here.",
+  "description": "OHLC Chart, for Stocks and Financial Data visualization",
   "main": "visualization.js",
   "scripts": {
-    "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
+    "build": "node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
     "watch": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
   "author": "Splunk",
   "license": "MIT",
   "devDependencies": {
+    "regexp-replace-loader": "^1.0.1",
     "webpack": "^1.12.6"
   },
   "dependencies": {
-    "c3": "^0.6.6",
-    "d3": "^5.5.0",
-    "jquery": "^2.2.4",
-    "plotly.js-dist": "^1.46.0",
-    "regexp-replace-loader": "^1.0.1",
-    "save": "^2.3.2",
-    "sma": "^0.1.0",
-    "exponential-moving-average": "^1.0.0",
-    "underscore": "^1.9.1"
+    "d3": "^7.0.1",
+    "jquery": ">=3.5.0",
+    "plotly.js-dist": "^2.4.1",
+    "underscore": "^1.12.1",
+    "sma": "^0.1.1",
+    "exponential-moving-average": "^1.0.0"
   }
 }
