@@ -1,4 +1,4 @@
-# Plotly.js Custom Visualizations
+# Financial and Advanced Statistical Data Visualizations
 A collection of Splunk modular visualizations based on [plotly.js](https://github.com/plotly/plotly.js/), a JavaScript open-source library used to create interactive charts for finance, engineering and sciences.
 
 Visualizations included into this collection:
@@ -11,9 +11,9 @@ Visualizations included into this collection:
 - Unpack/Install Splunk by running the downloaded files.
 - Follow the instruction on the screen.
 
-**plotly_custom_viz_splunk** can be downloaded from **GitHub** and installed in your Splunk platform. Access your Splunk instance via terminal and:
+**splunk_plotly_collection_viz** can be downloaded from either **GitHub** or Splunkbase and installed in your Splunk platform. Access your Splunk instance via terminal and:
 - browse to your apps directory `$SPLUNK_HOME/etc/apps/`
-- download the app from github `git clone https://github.com/splunk/splunk-plotly-collection-viz`
+- download the app from github `git clone https://github.com/splunk/splunk-plotly-collection-viz.git`
 - Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
 
 ## Usage
