@@ -2,6 +2,8 @@ define([
   'jquery',
   'underscore',
   'plotly.js-dist',
+  'lodash.clonedeep',
+  'd3',
   'api/SplunkVisualizationBase',
   'api/SplunkVisualizationUtils'
   // Add required assets to this list
@@ -9,6 +11,8 @@ define([
   $,
   _,
   Plotly,
+  clonedeep,
+  d3,
   SplunkVisualizationBase,
   SplunkVisualizationUtils
 ) {
@@ -37,12 +41,12 @@ define([
     },
 
     formatData: function(data, config) {
-      // Expects to have 2 columns corresponding to 2 fields:
-      // <basesearch> | _time scattervalue linevalue1 linevalue2 linevalueX
+      // Expects to have field names beginning with scatter* and line*
+      // <basesearch> | _time scatterval1 scatterval2 scattervalN lineval1 lineval2 linevalN
 
       var columns = data.columns,
           indexTime = 0,
-          indexScatter = indexTime +1,
+          retScatter = {},
           retLines = {};
 
       //This returns nothing if there is no data passed in
@@ -50,19 +54,39 @@ define([
         return;
       }
 
-      // TODO handle errors
-
       $.each(data.fields, function(i, field){
-          if (i > indexScatter) {
-            // Got a line trace
-            retLines[field.name.toLowerCase()] = columns[i];
+          if (i > indexTime) {
+            if (field.name.match("^scatter")) {
+              // Got a scatter trace
+              retScatter[field.name.toLowerCase()] = columns[i];
+              return true;
+            }
+
+            if (field.name.match("^line")) {
+              // Got a line trace
+              var currValue = 0;
+              $.each(columns[i], function (j, col) {
+                if (col !== null) {
+                  // Linked to autorange: "reversed". TODO Check
+                  // currValue = Math.abs(col) * -1;
+                  currValue = col;
+                }
+                // Replace null/empty values w/ latest
+                columns[i][j] = currValue.toString(10);
+              });
+              retLines[field.name.toLowerCase()] = columns[i];
+              return true;
+            }
+
+            // Throw error?
+            console.log("WARNING: got a field with unknown name. Skipping.");
           }
       });
 
       return {
         "time": columns[indexTime],
         "lines": retLines,
-        "scatter": columns[indexScatter]
+        "scatter": retScatter
       }
     },
 
@@ -77,8 +101,11 @@ define([
           scatter = data.scatter;
 
       //get info from config
-      var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
-      var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
+      var title = this._getEscapedProperty("titleChart", config) || "";
+      var modeBar = SplunkVisualizationUtils.normalizeBoolean(
+          this._getEscapedProperty('mbDisplay', config));
+      var dispLegend = SplunkVisualizationUtils.normalizeBoolean(
+          this._getEscapedProperty('showLegend', config));
 
       var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
       var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
@@ -93,41 +120,75 @@ define([
       $('#' + this.id).empty();
 
       let lineTraces = $.map(lines, function(value, key) {
-          return {
+        let tempValue = clonedeep(value);
+        return {
             x: time,
             y: value,
             name: key,
-            hoverinfo: 'x+y',
-            type: 'scatter',
-            fill: 'tozeroy',
-            mode: 'lines'
-          }
+            shape: "spline",
+            smoothing: 0,
+            hovertext: tempValue,
+            hoverinfo: "text",
+            type: "scatter",
+            fill: "tonexty",
+            // stackgroup: 'one',
+            yaxis: "y2",
+            mode: "lines"
+        };
       });
-      // console.log("Traces ", traces);
 
-      var scatterTrace = {
-        x: time,
-        y: scatter,
-        name: 'scatter',
-        hoverinfo: 'x+y',
-        type: 'scatter',
-        mode: 'markers',
-        yaxis: 'y2'
-        // text: ['B-a', 'B-b', 'B-c', 'B-d', 'B-e']
-        // marker: { size: 12 }
+      let stackingTraces = function (traces, backupTraces) {
+        for (i=1; i<traces.length; i++) {
+          for (j=0; j < Math.min(traces[i]["y"].length, traces[i - 1]["y"].length); j++) {
+            //traces[i]["hovertext"][j] = String(traces[i]["y"][j]);
+            backupTraces[i]["y"][j] = Number(traces[i]["y"][j]) + Number(traces[i - 1]["y"][j]);
+            backupTraces[i]["hovertext"][j] = traces[i]["y"][j];
+          }
+        }
+        return backupTraces;
       };
 
-      var dataInput = lineTraces;
-      dataInput.push(scatterTrace);
+      // Handling colors
+      // > See also https://stackoverflow.com/questions/40673490/how-to-get-plotly-js-default-colors-list
+      var colors = d3.scale.category20(),
+        colorsRange = colors.range(), // ["#ff1ada", ..]
+        nextColor = -2;
+
+      let scatterTrace = $.map(scatter, function (value, key) {
+        nextColor = nextColor + 2; // Skipping colors used for line area filling
+        return {
+            x: time,
+            y: value,
+            name: key,
+            //hoverinfo: "x+y",
+            type: "scatter",
+            // Custom color
+            marker: {
+              color: colorsRange[nextColor]
+            },
+            mode: "markers"
+        };
+      });
+
+      var dataInput = stackingTraces(lineTraces, clonedeep(lineTraces));
+      $.merge(dataInput, scatterTrace);
 
       // Major reference: https://plot.ly/javascript/reference/#layout-yaxis
       var layout = {
-        title: 'Double Y Axis Example',
+        title: title,
         autosize: true,
         margin: {
-          t: 50
+          t: 30,
+          b: 30
         },
         showlegend: dispLegend,
+        // In reference to: https://github.com/plotly/plotly.js/issues/1594
+        legend: {
+          orientation: "v",
+          x: 1.1,
+          xanchor: "left",
+          y: 1
+        },
         xaxis: {
           title: xAxisLabel,
           autorange: true,
@@ -137,11 +198,15 @@ define([
         yaxis: {
           title: yAxisLabel,
           tickangle: yTickAngle,
-          autorange: true
+          autorange: true,
+          ticksuffix: "s",
+          autorange: false,
+          range: [0, 40]
         },
         yaxis2: {
           title: y2AxisLabel,
           showgrid: false,
+          autorange: "reversed",
           tickangle: y2TickAngle,
           titlefont: {color: 'rgb(148, 103, 189)'},
           tickfont: {color: 'rgb(148, 103, 189)'},
@@ -155,9 +220,8 @@ define([
       Plotly.newPlot('multipleaxesContainer_' + this.__uniqueID, dataInput, layout, {
         displayModeBar: modeBar,
         displaylogo: false
-        // FIXME check buttons which can be removed from plotly mode bar
+        // TODO Check buttons which can be removed from plotly mode bar
       });
-
     },
 
     _getEscapedProperty: function(name, config) {
