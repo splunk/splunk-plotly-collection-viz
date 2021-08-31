@@ -99,15 +99,19 @@ define([
           boxValues = dataset.values;
 
       //get info from config
-      var modeBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('mbDisplay', config));
-      var dispLegend = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLegend', config));
+      var modeBar = SplunkVisualizationUtils.normalizeBoolean(
+        this._getEscapedProperty('mbDisplay', config));
+      var dispLegend = SplunkVisualizationUtils.normalizeBoolean(
+        this._getEscapedProperty('showLegend', config));
       var xTickAngle = this._getEscapedProperty('xAngle', config) || 0;
       var yTickAngle = this._getEscapedProperty('yAngle', config) || 0;
       var xAxisLabel = this._getEscapedProperty('xAxisName', config) || "x";
       var yAxisLabel = this._getEscapedProperty('yAxisName', config) || "y";
 
-      var plotMean = this._getBoxDistribution(this._getEscapedProperty('boxMean', config) || "none");
-      var plotPoints = this._getBoxOutliers(this._getEscapedProperty('boxPoints', config) || "none");
+      var plotMean = this._getBoxDistribution(
+        this._getEscapedProperty('boxMean', config) || "none");
+      var plotPoints = this._getBoxOutliers(
+        this._getEscapedProperty('boxPoints', config) || "none");
 
       // Cleanup previous data
       Plotly.purge('boxplotContainer_' + this.__uniqueID);
