@@ -181,26 +181,50 @@ define([
           t: 30,
           b: 30
         },
+        paper_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        plot_bgcolor: isDarkTheme ? "transparent" : "#fff",
+        font: { 
+          color: isDarkTheme ? '#A6A6A6' : '#444' 
+        },
         showlegend: dispLegend,
         // In reference to: https://github.com/plotly/plotly.js/issues/1594
         legend: {
+          bgcolor: isDarkTheme ? '#212527' : '#fff',
           orientation: "v",
           x: 1.1,
           xanchor: "left",
           y: 1
         },
         xaxis: {
-          title: xAxisLabel,
+          title: {
+            text: xAxisLabel,
+            font: {
+              color: isDarkTheme ? "#A6A6A6" : "#444",
+            },
+          },
+          gridcolor: isDarkTheme ? "#949494" : "#eee",
           autorange: true,
-          tickangle: xTickAngle
+          tickangle: xTickAngle,
+          tickfont: {
+            color: isDarkTheme ? "#A6A6A6" : "#444",
+          }
           // tickformat: "%H:%M"
         },
         yaxis: {
-          title: yAxisLabel,
+          title: {
+            text: yAxisLabel,
+            font: {
+              color: isDarkTheme ? "#A6A6A6" : "#444",
+            },
+          },
           tickangle: yTickAngle,
+          tickfont: {
+            color: isDarkTheme ? "#A6A6A6" : "#444",
+          },
           autorange: true,
           ticksuffix: "s",
           autorange: false,
+          gridcolor: isDarkTheme ? "#949494" : "#eee",
           range: [0, 40]
         },
         yaxis2: {
