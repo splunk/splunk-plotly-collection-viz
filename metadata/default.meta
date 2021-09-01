@@ -36,7 +36,6 @@ export = system
 
 ### Visualizations
 
-# Un-comment the stanza below to make the standin visualization available to all apps.
 [visualizations/ohlc]
 export = system
 
@@ -44,4 +43,10 @@ export = system
 export = system
 
 [visualizations/multiple-axes]
+export = system
+
+### VIEWS
+
+[views/overview_plotly_charts]
+access = read : [ * ], write : [ admin, power ]
 export = system
