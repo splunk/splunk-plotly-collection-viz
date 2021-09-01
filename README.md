@@ -28,6 +28,10 @@ If not provided, default values will be used for optional fields `currencypair`,
 
 > Field names **must** correspond to the ones specified above to be properly handled by the visualization
 
+![alt text](OHLC_candlestick.png "OHLC Chart - Candlestick Example")
+
+![alt text](OHLC_bars.png "OHLC Chart - Bars Example")
+
 ### Box Plot
 `<basesearch> | table box_name value`
 
@@ -37,6 +41,8 @@ Replace `box_name` and `value` with your fields to start.
 |-------------|---------|--------------------------|-----------|
 | `box_name`  | string  | Label of the box         | `A`       |
 | `value`     | numeric | Data forming box dataset | `20`      |
+
+![alt text](boxplot_chart.png "Boxplot Chart Example")
 
 ### Multiple Axes Plot
 `<basesearch> | table _time scatter-y2-dataset1 scatter-y2_datasetN line-y-dataset1 line-y-datasetN`
@@ -53,62 +59,14 @@ Replace `_time`, `scatter-y2-datasetX` and `line-y-datasetX` with your fields to
 
 > Field names **must** begin with `scatter` and `line` to be properly handled by the visualization
 
-## Examples
-Sample SPL Search for OHLC:
-
-```sh
-| gentimes start=-30 increment=6h
-| fields starttime
-| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S") 
-| eval open=(random() %50) + 1
-| eval sign=if((random() %2)==0,"-","+")
-| eval close=(((random() %20)/100)*open)
-| eval close=sign+close
-| eval close=round(close+open,1)
-| eval high=if(open > close,(open*.1)+open,(close*.1)+close)
-| eval low=if(open < close,open-(open*.1),close-(close*.1))
-| sort starttime 
-| fields - sign, starttime
-| trendline ema8(close) AS 8PointEMA ema20(close) AS 20PointEMA 
-| reverse
-```
-
-OHLC - Candlestick
-
-![alt text](OHLC_candlestick.png "OHLC Chart - Candlestick")
-
-OHLC - Bars
-
-![alt text](OHLC_bars.png "OHLC Chart - Bars")
-
-Sample SPL Search for BoxPlot:
-
-```sh
-| makeresults count=100
-| streamstats count as group_num
-| eval group_num = ((group_num-1) % 5)+1
-| eval group_num = "Test ".group_num 
-| eval y=random() %51
-| fields - _time
-```
-
-![alt text](boxplot_chart.png "Boxplot Chart")
-
-Sample SPL Search for Multiple-Axes:
-```sh
-| gentimes start=-30 increment=6h
-| fields starttime
-| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S") 
-| eval line1=(random() %50) + 1 
-| eval line2=(random() %50) + 1 
-| eval sign=if((random() %2)==0,"-","+") 
-| eval scatter=(((random() %20)/100)*line1) 
-| eval scatter=sign.scatter
-| fields - sign
-| table _time, scatter, line1, line2
-```
-
 ![alt text](MultipleAxes_plot.png "Multiple Axes Plot")
+
+## Example
+This app comes with a dashboard showcasing simple usages of mentioned charts.
+
+* Navigate to `Apps / Search & Reporting / Dashboards` 
+* Click on the dashboard `Overview of Plotly Charts for Splunk`
+* Be inspired
 
 ## Contributing
 * Want to **contribute**? Great! Feel free to [create a Pull Request](https://github.com/splunk/splunk-plotly-collection-viz/pulls)
