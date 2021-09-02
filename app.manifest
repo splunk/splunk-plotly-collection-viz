@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0.0",
   "info": {
-    "title": "Financial and Advanced Statistical Data Visualizations",
+    "title": "Plotly.js Charts for Splunk",
     "id": {
       "group": null,
       "name": "splunk_plotly_collection_viz",
@@ -9,13 +9,13 @@
     },
     "author": [
       {
-        "name": "Erica Pescio, Tamar Zamba",
+        "name": "Tamar Zamba, Erica Pescio",
         "email": null,
         "company": null
       }
     ],
     "releaseDate": null,
-    "description": "Financial and advanced statistical data visualizations based on Plotly.js.",
+    "description": "Financial and advanced statistical data visualizations based on Plotly.js",
     "classification": {
       "intendedAudience": null,
       "categories": [],
@@ -24,7 +24,7 @@
     "commonInformationModels": null,
     "license": {
       "name": null,
-      "text": null,
+      "text": "./LICENSE.md",
       "uri": null
     },
     "privacyPolicy": {
@@ -38,7 +38,7 @@
       "uri": null
     }
   },
-  "dependencies": {},
+  "dependencies": null,
   "tasks": null,
   "inputGroups": null,
   "incompatibleApps": null,
@@ -47,6 +47,6 @@
     "*"
   ],
   "targetWorkloads": [
-      "_search_heads"
+    "_search_heads"
   ]
 }
