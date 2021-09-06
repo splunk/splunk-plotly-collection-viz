@@ -1,5 +1,10 @@
 <form class="splunk-formatter-section" section-label="General">
 
+  <splunk-control-group label="Title">
+    <splunk-text-input name="{{VIZ_NAMESPACE}}.titleChart">
+    </splunk-text-input>
+  </splunk-control-group>
+
   <splunk-control-group label="Display Plotly Mode Bar">
     <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay" value='0'>
       <option value='1'>Show</option>

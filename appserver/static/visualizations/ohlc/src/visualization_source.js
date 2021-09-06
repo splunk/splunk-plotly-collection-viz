@@ -7,8 +7,7 @@ define([
     'sma',
     'exponential-moving-average'
     // Add required assets to this list
-  ],
-  function(
+  ], function (
     $,
     _,
     Plotly,
@@ -240,7 +239,7 @@ define([
         // Plotting the chart
         // Functions ref. https://plot.ly/javascript/plotlyjs-function-reference/
         // > config details: https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js
-        Plotly.plot('candlestickContainer_'  + this.__uniqueID, chartData, layout, {
+        Plotly.newPlot('candlestickContainer_'  + this.__uniqueID, chartData, layout, {
           displayModeBar: modeBar,
           displaylogo: false,
           // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
