@@ -7,14 +7,7 @@ Visualizations included into this collection:
 * Multiple Axes Chart - for Advanced Statistical Data Visualizations    ([source code](appserver/static/visualizations/multiple-axes/src/visualization_source.js))
 
 ## Installation
-- [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
-- Unpack/Install Splunk by running the downloaded files.
-- Follow the instruction on the screen.
-
-**splunk_plotly_collection_viz** can be downloaded from either **GitHub** or Splunkbase and installed in your Splunk platform. Access your Splunk instance via terminal and:
-- browse to your apps directory `$SPLUNK_HOME/etc/apps/`
-- download the app from github `git clone https://github.com/splunk/splunk-plotly-collection-viz.git`
-- Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
+Please refer to the [Splunk Documentation](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) for guidance on installing the Add-On in your environment. The app needs to be installed on the SH tier.
 
 ## Usage
 * Type your search
