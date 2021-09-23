@@ -24,7 +24,7 @@
     "commonInformationModels": null,
     "license": {
       "name": null,
-      "text": "./LICENSE.md",
+      "text": "LICENSE.md",
       "uri": null
     },
     "privacyPolicy": {
@@ -34,7 +34,7 @@
     },
     "releaseNotes": {
       "name": null,
-      "text": "./README.md",
+      "text": "README.md",
       "uri": null
     }
   },
