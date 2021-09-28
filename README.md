@@ -9,6 +9,8 @@ Visualizations included into this collection:
 ## Installation
 Please refer to the [Splunk Documentation](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) for guidance on installing the Add-On in your environment. The app needs to be installed on the SH tier.
 
+Download is available from either [GitHub](https://github.com/splunk/splunk-plotly-collection-viz/releases) or [Splunkbase](https://splunkbase.splunk.com/app/5730/).
+
 ## Usage
 * Type your search
 * Click on tab `Visualization` and then select either `OHLC Chart`, `Box Plot` or `Multiple Axes` among available visualizations
