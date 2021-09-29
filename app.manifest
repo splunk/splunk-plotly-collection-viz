@@ -9,7 +9,7 @@
     },
     "author": [
       {
-        "name": "Tamar Zamba, Erica Pescio",
+        "name": "Erica Pescio",
         "email": null,
         "company": null
       }
@@ -18,7 +18,7 @@
     "description": "Financial and advanced statistical data visualizations based on Plotly.js",
     "classification": {
       "intendedAudience": null,
-      "categories": [],
+      "categories": ["Business Analytics", "Utilities"],
       "developmentStatus": null
     },
     "commonInformationModels": null,
@@ -33,7 +33,7 @@
       "uri": null
     },
     "releaseNotes": {
-      "name": null,
+      "name": "README",
       "text": "README.md",
       "uri": null
     }
