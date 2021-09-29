@@ -20,11 +20,18 @@ jobs:
     outputs:
       old_version: ${{ steps.bumpversion.outputs.old_ver }}
       version: ${{ steps.bumpversion.outputs.new_ver }}
+      app_name: ${{ steps.appinfo.outputs.app_name }}
     # Validate bump part before moving forward 
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
+      
+      - name: Fetch and set app info
+        id: appinfo
+        run: |
+          APP_NAME=$(cat app.manifest | jq -r '.info.id.name' | tr _ - )
+          echo "::set-output name=app_name::${APP_NAME}"
 
       - name: Bump version and push tag
         id: bumpversion
@@ -32,6 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: ${{ github.event.inputs.bumpPart }}
+      
       - name: Push tags
         run: |
           remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
@@ -45,15 +53,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Excluding images from README
+        run: |
+          sed -i '/^!/d' README.md
+
       - name: Bundle app source
         run: |
           mkdir dist
-          tar -zcvf dist/splunk-plotly-collection-viz-${{ needs.tag-version.outputs.version }}.tar.gz --exclude=.git* --exclude=./dist .
+          tar -zcvf dist/${{ needs.tag-version.outputs.app_name }}-${{ needs.tag-version.outputs.version }}.tar.gz --exclude='.[^/]*' --exclude=./dist .
 
       - uses: actions/upload-artifact@v2
         with:
           name: app_tgz
-          path: dist/splunk-plotly-collection-viz-${{ needs.tag-version.outputs.version }}.tar.gz
+          path: dist/${{ needs.tag-version.outputs.app_name }}-${{ needs.tag-version.outputs.version }}.tar.gz
 
   release:
     name: Create Release
