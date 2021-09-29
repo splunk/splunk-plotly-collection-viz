@@ -24,7 +24,7 @@ jobs:
       - name: Bundle app source
         run: |
           mkdir dist
-          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude=.git* --exclude=.bump* --exclude=./.images/ --exclude=./dist .
+          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
       - name: Upload artifact
         uses: actions/upload-artifact@v2
