@@ -1,0 +1,116 @@
+name: CI
+
+on: 
+  push:
+    paths-ignore:
+      - '.github/workflows/manual-release.yml'
+
+env:
+  APP_NAME: splunk-plotly-collection-viz
+  APP_ID: splunk_plotly_collection_viz
+
+jobs:
+  bundle-app:
+    name: Bundle App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: 
+
+      - name: Bundle app source
+        run: |
+          mkdir dist
+          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude-vcs --exclude=.bump* --exclude=./.images --exclude=./dist .
+        # FIXME exclude also images and fix README. Do this in regular ci first. 
+  
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app_tgz
+          path: dist/${{ env.APP_NAME }}.tgz
+  
+  slim-validate:
+    name: SLIM Validation
+    needs: bundle-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app_tgz
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install splunk-packaging-toolkit
+      
+      - name: Unpackage artifact
+        run: |
+          mkdir ${{ env.APP_ID }}
+          tar -xf ${{ env.APP_NAME }}.tgz -C ${{ env.APP_ID }}
+      - name: Slim Validate
+        run: slim validate ${{ env.APP_ID }}
+
+  appinspect-cli:
+    name: AppInspect CLI Validation
+    needs: bundle-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app_tgz
+
+      - name: Unpackage artifact
+        run: |
+          mkdir -p build/${{ env.APP_ID }}
+          tar -xf ${{ env.APP_NAME }}.tgz -C build/${{ env.APP_ID }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install splunk-appinspect
+      
+      - name: Run AppInspect
+        run: |
+          splunk-appinspect inspect ${{ env.APP_ID }} --output-file appinspect.json
+          exit `cat appinspect.json | jq '.summary.failure'`
+        working-directory: ./build
+
+  appinspect-api:
+        name: AppInspect API Validation
+        needs: 
+          - appinspect-cli
+          - slim-validate
+        runs-on: ubuntu-latest
+        # Job not executed if branch is not master
+        if: github.ref == 'refs/heads/master'
+        steps:
+          - name: Download artifact
+            uses: actions/download-artifact@v2
+            with:
+              name: app_tgz
+
+          - name: Listing dirs
+            run: ls -a
+
+          - name: Run AppInspect
+            uses: splunk/appinspect-api-action@v2
+            with:
+              filePath: ${{ env.APP_NAME }}.tgz
+              splunkUser: ${{ secrets.SPLUNK_USER }}
+              splunkPassword: ${{ secrets.SPLUNK_PASS }}
+              includedTags: cloud
+              failOnError: true
+              failOnWarning: false
