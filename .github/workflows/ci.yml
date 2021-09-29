@@ -19,7 +19,8 @@ jobs:
       
       - name: Excluding images from README
         run: |
-          sed -i "" '/^!/d' README.md
+          ls -la
+          sed -i '/^!/d' README.md
 
       - name: Bundle app source
         run: |
