@@ -23,9 +23,9 @@ If not provided, default values will be used for optional fields `currencypair`,
 
 > Field names **must** correspond to the ones specified above to be properly handled by the visualization
 
-![alt text](OHLC_candlestick.png "OHLC Chart - Candlestick Example")
+![alt text](.images/OHLC_candlestick.png "OHLC Chart - Candlestick Example")
 
-![alt text](OHLC_bars.png "OHLC Chart - Bars Example")
+![alt text](.images/OHLC_bars.png "OHLC Chart - Bars Example")
 
 ### Box Plot
 `<basesearch> | table box_name value`
@@ -37,7 +37,7 @@ Replace `box_name` and `value` with your fields to start.
 | `box_name`  | string  | Label of the box         | `A`       |
 | `value`     | numeric | Data forming box dataset | `20`      |
 
-![alt text](boxplot_chart.png "Boxplot Chart Example")
+![alt text](.images/boxplot_chart.png "Boxplot Chart Example")
 
 ### Multiple Axes Plot
 `<basesearch> | table _time scatter-y2-dataset1 scatter-y2_datasetN line-y-dataset1 line-y-datasetN`
@@ -54,7 +54,7 @@ Replace `_time`, `scatter-y2-datasetX` and `line-y-datasetX` with your fields to
 
 > Field names **must** begin with `scatter` and `line` to be properly handled by the visualization
 
-![alt text](MultipleAxes_plot.png "Multiple Axes Plot")
+![alt text](.images/MultipleAxes_plot.png "Multiple Axes Plot")
 
 ## Example
 This app comes with a dashboard showcasing simple usages of mentioned charts.
