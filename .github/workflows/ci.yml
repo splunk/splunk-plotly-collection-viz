@@ -5,9 +5,9 @@ on:
     paths-ignore:
       - '.github/workflows/manual-release.yml'
 
-env:
-  APP_NAME: splunk-plotly-collection-viz
-  APP_ID: splunk_plotly_collection_viz
+# env:
+#   APP_NAME: splunk-plotly-collection-viz
+  # APP_ID: splunk_plotly_collection_viz
 
 jobs:
   bundle-app:
@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Set app environment variables
+        run: |
+          APP_ID=$(cat app.manifest | jq '.info.id.name')
+          echo ("APP_ID=" + $APP_ID) >> $GITHUB_ENV
+          APP_NAME=$(echo "$APP_ID" | tr _ - )
+          echo ("APP_NAME=" + $APP_NAME) >> $GITHUB_ENV
       
       - name: Excluding images from README
         run: |
@@ -90,29 +97,26 @@ jobs:
           exit `cat appinspect.json | jq '.summary.failure'`
         working-directory: ./build
 
-  appinspect-api:
-    name: AppInspect API Validation
-    needs: 
-      - appinspect-cli
-      - slim-validate
-    runs-on: ubuntu-latest
-    # Job not executed if branch is not master
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: app_tgz
+  # appinspect-api:
+  #   name: AppInspect API Validation
+  #   needs: 
+  #     - appinspect-cli
+  #     - slim-validate
+  #   runs-on: ubuntu-latest
+  #   # Job not executed if branch is not master
+  #   if: github.ref == 'refs/heads/master'
+  #   steps:
+  #     - name: Download artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: app_tgz
 
-      - name: Listing dirs
-        run: ls -a
-
-      - name: Run AppInspect
-        uses: splunk/appinspect-api-action@v2
-        with:
-          filePath: ${{ env.APP_NAME }}.tgz
-          splunkUser: ${{ secrets.SPLUNK_USER }}
-          splunkPassword: ${{ secrets.SPLUNK_PASS }}
-          includedTags: cloud
-          failOnError: true
-          failOnWarning: false
+  #     - name: Run AppInspect
+  #       uses: splunk/appinspect-api-action@v2
+  #       with:
+  #         filePath: ${{ env.APP_NAME }}.tgz
+  #         splunkUser: ${{ secrets.SPLUNK_USER }}
+  #         splunkPassword: ${{ secrets.SPLUNK_PASS }}
+  #         includedTags: cloud
+  #         failOnError: true
+  #         failOnWarning: false
