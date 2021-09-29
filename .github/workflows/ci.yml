@@ -13,16 +13,25 @@ jobs:
   bundle-app:
     name: Bundle App
     runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.appenv.outputs.app_name }}
+      app_id: ${{ steps.appenv.outputs.app_id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       
       - name: Set app environment variables
+        id: appenv
         run: |
           APP_ID=$(cat app.manifest | jq '.info.id.name')
-          echo APP_ID=$APP_ID | sed -r 's/"//g' >> $GITHUB_ENV
+          echo "::set-output name=app_id::${APP_ID}"
           APP_NAME=$(echo "$APP_ID" | tr _ - )
-          echo APP_NAME=$APP_NAME | sed -r 's/"//g' >> $GITHUB_ENV
+          echo "::set-output name=app_name::${APP_NAME}"
+        # run: |
+        #   APP_ID=$(cat app.manifest | jq '.info.id.name')
+        #   echo APP_ID=$APP_ID | sed -r 's/"//g' >> $GITHUB_ENV
+        #   APP_NAME=$(echo "$APP_ID" | tr _ - )
+        #   echo APP_NAME=$APP_NAME | sed -r 's/"//g' >> $GITHUB_ENV
       
       - name: Excluding images from README
         run: |
@@ -30,9 +39,9 @@ jobs:
 
       - name: Bundle app source
         run: |
-          echo ${{ env.APP_NAME }}
+          echo ${{ steps.appenv.outputs.app_name }}
           mkdir dist
-          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude='.[^/]*' --exclude=./dist .
+          tar -zcvf dist/${{ steps.appenv.outputs.app_name }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -62,11 +71,11 @@ jobs:
       
       - name: Unpackage artifact
         run: |
-          mkdir ${{ env.APP_ID }}
-          tar -xf ${{ env.APP_NAME }}.tgz -C ${{ env.APP_ID }}
+          mkdir ${{ needs.bundle-app.appenv.outputs.app_id }}
+          tar -xf ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz -C ${{ needs.bundle-app.appenv.outputs.app_id }}
 
       - name: Slim Validate
-        run: slim validate ${{ env.APP_ID }}
+        run: slim validate ${{ needs.bundle-app.appenv.outputs.app_id }}
 
   appinspect-cli:
     name: AppInspect CLI Validation
@@ -80,8 +89,8 @@ jobs:
 
       - name: Unpackage artifact
         run: |
-          mkdir -p build/${{ env.APP_ID }}
-          tar -xf ${{ env.APP_NAME }}.tgz -C build/${{ env.APP_ID }}
+          mkdir -p build/${{ needs.bundle-app.appenv.outputs.app_id }}
+          tar -xf ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz -C build/${{ needs.bundle-app.appenv.outputs.app_id }}
       
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -94,30 +103,31 @@ jobs:
       
       - name: Run AppInspect
         run: |
-          splunk-appinspect inspect ${{ env.APP_ID }} --output-file appinspect.json
+          splunk-appinspect inspect ${{ needs.bundle-app.appenv.outputs.app_id }} --output-file appinspect.json
           exit `cat appinspect.json | jq '.summary.failure'`
         working-directory: ./build
 
-  # appinspect-api:
-  #   name: AppInspect API Validation
-  #   needs: 
-  #     - appinspect-cli
-  #     - slim-validate
-  #   runs-on: ubuntu-latest
-  #   # Job not executed if branch is not master
-  #   if: github.ref == 'refs/heads/master'
-  #   steps:
-  #     - name: Download artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: app_tgz
+  appinspect-api:
+    name: AppInspect API Validation
+    needs: 
+      - bundle-app
+      - appinspect-cli
+      - slim-validate
+    runs-on: ubuntu-latest
+    # Job not executed if branch is not master
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app_tgz
 
-  #     - name: Run AppInspect
-  #       uses: splunk/appinspect-api-action@v2
-  #       with:
-  #         filePath: ${{ env.APP_NAME }}.tgz
-  #         splunkUser: ${{ secrets.SPLUNK_USER }}
-  #         splunkPassword: ${{ secrets.SPLUNK_PASS }}
-  #         includedTags: cloud
-  #         failOnError: true
-  #         failOnWarning: false
+      - name: Run AppInspect
+        uses: splunk/appinspect-api-action@v2
+        with:
+          filePath: ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz
+          splunkUser: ${{ secrets.SPLUNK_USER }}
+          splunkPassword: ${{ secrets.SPLUNK_PASS }}
+          includedTags: cloud
+          failOnError: true
+          failOnWarning: false
