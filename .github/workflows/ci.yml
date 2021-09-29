@@ -19,13 +19,12 @@ jobs:
       
       - name: Excluding images from README
         run: |
-          ls -la
           sed -i '/^!/d' README.md
 
       - name: Bundle app source
         run: |
           mkdir dist
-          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude-vcs --exclude=.bump* --exclude=.images/ --exclude=./dist .
+          tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude=.git* --exclude=.bump* --exclude=./.images/ --exclude=./dist .
   
       - name: Upload artifact
         uses: actions/upload-artifact@v2
