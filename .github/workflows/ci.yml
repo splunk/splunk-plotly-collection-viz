@@ -5,49 +5,39 @@ on:
     paths-ignore:
       - '.github/workflows/manual-release.yml'
 
-# env:
-#   APP_NAME: splunk-plotly-collection-viz
-  # APP_ID: splunk_plotly_collection_viz
-
 jobs:
   bundle-app:
     name: Bundle App
     runs-on: ubuntu-latest
     outputs:
-      app_name: ${{ steps.appenv.outputs.app_name }}
-      app_id: ${{ steps.appenv.outputs.app_id }}
+      app_name: ${{ steps.appinfo.outputs.app_name }}
+      app_id: ${{ steps.appinfo.outputs.app_id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Set app environment variables
-        id: appenv
+      - name: Fetch and set app info
+        id: appinfo
         run: |
           APP_ID=$(cat app.manifest | jq -r '.info.id.name')
           echo "::set-output name=app_id::${APP_ID}"
           APP_NAME=$(echo "$APP_ID" | tr _ - )
           echo "::set-output name=app_name::${APP_NAME}"
-        # run: |
-        #   APP_ID=$(cat app.manifest | jq '.info.id.name')
-        #   echo APP_ID=$APP_ID | sed -r 's/"//g' >> $GITHUB_ENV
-        #   APP_NAME=$(echo "$APP_ID" | tr _ - )
-        #   echo APP_NAME=$APP_NAME | sed -r 's/"//g' >> $GITHUB_ENV
-      
+
       - name: Excluding images from README
         run: |
           sed -i '/^!/d' README.md
 
       - name: Bundle app source
         run: |
-          echo ${{ steps.appenv.outputs.app_name }}
           mkdir dist
-          tar -zcvf dist/${{ steps.appenv.outputs.app_name }}.tgz --exclude='.[^/]*' --exclude=./dist .
+          tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: app_tgz
-          path: dist/${{ steps.appenv.outputs.app_name }}.tgz
+          path: dist/${{ steps.appinfo.outputs.app_name }}.tgz
   
   slim-validate:
     name: SLIM Validation
