@@ -71,11 +71,11 @@ jobs:
       
       - name: Unpackage artifact
         run: |
-          mkdir ${{ needs.bundle-app.appenv.outputs.app_id }}
-          tar -xf ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz -C ${{ needs.bundle-app.appenv.outputs.app_id }}
+          mkdir ${{ needs.bundle-app.outputs.app_id }}
+          tar -xf ${{ needs.bundle-app.outputs.app_name }}.tgz -C ${{ needs.bundle-app.outputs.app_id }}
 
       - name: Slim Validate
-        run: slim validate ${{ needs.bundle-app.appenv.outputs.app_id }}
+        run: slim validate ${{ needs.bundle-app.outputs.app_id }}
 
   appinspect-cli:
     name: AppInspect CLI Validation
@@ -89,8 +89,8 @@ jobs:
 
       - name: Unpackage artifact
         run: |
-          mkdir -p build/${{ needs.bundle-app.appenv.outputs.app_id }}
-          tar -xf ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz -C build/${{ needs.bundle-app.appenv.outputs.app_id }}
+          mkdir -p build/${{ needs.bundle-app.outputs.app_id }}
+          tar -xf ${{ needs.bundle-app.outputs.app_name }}.tgz -C build/${{ needs.bundle-app.outputs.app_id }}
       
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -103,7 +103,7 @@ jobs:
       
       - name: Run AppInspect
         run: |
-          splunk-appinspect inspect ${{ needs.bundle-app.appenv.outputs.app_id }} --output-file appinspect.json
+          splunk-appinspect inspect ${{ needs.bundle-app.outputs.app_id }} --output-file appinspect.json
           exit `cat appinspect.json | jq '.summary.failure'`
         working-directory: ./build
 
@@ -125,7 +125,7 @@ jobs:
       - name: Run AppInspect
         uses: splunk/appinspect-api-action@v2
         with:
-          filePath: ${{ needs.bundle-app.appenv.outputs.app_name }}.tgz
+          filePath: ${{ needs.bundle-app.outputs.app_name }}.tgz
           splunkUser: ${{ secrets.SPLUNK_USER }}
           splunkPassword: ${{ secrets.SPLUNK_PASS }}
           includedTags: cloud
