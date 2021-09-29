@@ -23,7 +23,7 @@ jobs:
       - name: Set app environment variables
         id: appenv
         run: |
-          APP_ID=$(cat app.manifest | jq '.info.id.name')
+          APP_ID=$(cat app.manifest | jq -r '.info.id.name')
           echo "::set-output name=app_id::${APP_ID}"
           APP_NAME=$(echo "$APP_ID" | tr _ - )
           echo "::set-output name=app_name::${APP_NAME}"
