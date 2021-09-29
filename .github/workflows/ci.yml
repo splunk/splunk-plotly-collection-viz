@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: app_tgz
-          path: dist/${{ env.APP_NAME }}.tgz
+          path: dist/${{ steps.appenv.outputs.app_name }}.tgz
   
   slim-validate:
     name: SLIM Validation
