@@ -20,9 +20,9 @@ jobs:
       - name: Set app environment variables
         run: |
           APP_ID=$(cat app.manifest | jq '.info.id.name')
-          echo APP_ID="$APP_ID" >> $GITHUB_ENV
+          echo APP_ID=$APP_ID | sed -r 's/"//g' >> $GITHUB_ENV
           APP_NAME=$(echo "$APP_ID" | tr _ - )
-          echo APP_NAME="$APP_NAME" >> $GITHUB_ENV
+          echo APP_NAME=$APP_NAME | sed -r 's/"//g' >> $GITHUB_ENV
       
       - name: Excluding images from README
         run: |
@@ -30,6 +30,7 @@ jobs:
 
       - name: Bundle app source
         run: |
+          echo ${{ env.APP_NAME }}
           mkdir dist
           tar -zcvf dist/${{ env.APP_NAME }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
