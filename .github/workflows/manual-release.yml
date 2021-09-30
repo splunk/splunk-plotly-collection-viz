@@ -21,6 +21,7 @@ jobs:
       old_version: ${{ steps.bumpversion.outputs.old_ver }}
       version: ${{ steps.bumpversion.outputs.new_ver }}
       app_name: ${{ steps.appinfo.outputs.app_name }}
+      new_sha: ${{ steps.sha.outputs.sha }}
     # Validate bump part before moving forward 
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
     steps:
@@ -44,6 +45,12 @@ jobs:
         run: |
           remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           git push "${remote_repo}" HEAD:${GITHUB_REF} --follow-tags --tags
+      
+      - name: Get sha
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo "::set-output name=sha::$sha_new"
   
   build:
     name: Generate App Bundle
@@ -52,6 +59,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.tag-version.outputs.new_sha }}
+          fetch-depth: 0
 
       - name: Excluding images from README
         run: |
