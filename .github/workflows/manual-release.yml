@@ -138,6 +138,30 @@ jobs:
     name: Upload to Splunkbase
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder for publish
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app_tgz
+      
+      - name: Get artifact name
+        id: app-name
         run: |
-          echo "Placeholder for Splunkbase upload"
+          app_package=$(ls -1 *gz | xargs basename)
+          echo "::set-output name=package::${app_package}"
+
+      - name: Test connectivity
+        run: |
+          if ! ${{ secrets.SPLUNKBASE_ID != '' }} ; then exit 1; fi
+          
+        # curl --fail -s -u ${{ secrets.SPLUNK_USER }}:${{ secrets.SPLUNK_PASS }} --request GET "https://splunkbase.splunk.com/api/v1/app/${{ secrets.SPLUNKBASE_ID }}/"
+
+      # Ref: https://dev.splunk.com/enterprise/docs/releaseapps/splunkbase/submitcontentui/#Submit-content-to-Splunkbase-with-the-Release-API
+      - name: "Upload package to Splunkbase"
+        if: ${{ success() }}
+        run: |
+          mkdir build
+          tar -xf ${{ steps.app-name.outputs.package }} -C build
+          PACKAGE=$(ls build/*)
+          echo ${PACKAGE}
+          echo ${{ steps.app-name.outputs.package }}
+          curl --fail -s -u ${{ secrets.SPLUNK_USER }}:${{ secrets.SPLUNK_PASS }} --request POST https://splunkbase.splunk.com/api/v1/app/${{ secrets.SPLUNKBASE_ID }}/new_release/ -F "files[]=@${PACKAGE}" -F "filename=${{ steps.app-name.outputs.package }}" -F "splunk_versions=${{ secrets.SPLUNKBASE_SPLUNK_VERSION }}" -F "visibility=true"
