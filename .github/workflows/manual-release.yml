@@ -152,10 +152,10 @@ jobs:
       - name: Test connectivity
         run: |
           if ! ${{ secrets.SPLUNKBASE_ID != '' }} ; then exit 1; fi
-          
-        # curl --fail -s -u ${{ secrets.SPLUNK_USER }}:${{ secrets.SPLUNK_PASS }} --request GET "https://splunkbase.splunk.com/api/v1/app/${{ secrets.SPLUNKBASE_ID }}/"
+          curl --fail -s -u ${{ secrets.SPLUNK_USER }}:${{ secrets.SPLUNK_PASS }} --request GET "https://splunkbase.splunk.com/api/v1/app/${{ secrets.SPLUNKBASE_ID }}/"
 
       # Ref: https://dev.splunk.com/enterprise/docs/releaseapps/splunkbase/submitcontentui/#Submit-content-to-Splunkbase-with-the-Release-API
+      # TODO This has to be tested on apps already public in Splunkbase 
       - name: "Upload package to Splunkbase"
         if: ${{ success() }}
         run: |
