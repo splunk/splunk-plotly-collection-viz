@@ -1,4 +1,8 @@
 # Financial and Advanced Statistical Data Visualizations
+
+![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fsplunkbasebadge.livehybrid.com%2Fv1%2Finstalls%2F5730%2F)
+[![Actions Status: test](https://github.com/splunk/splunk-plotly-collection-viz/actions/workflows/ci.yml/badge.svg)](https://github.com/splunk/splunk-plotly-collection-viz/actions?query=workflow%3A"CI")
+
 A collection of Splunk modular visualizations based on [plotly.js](https://github.com/plotly/plotly.js/), a JavaScript open-source library used to create interactive charts for finance, engineering and sciences.
 
 Visualizations included into this collection:
