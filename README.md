@@ -70,8 +70,9 @@ This app comes with a dashboard showcasing simple usages of mentioned charts.
 * Be inspired
 
 ## Contributing
-* Want to **contribute**? Great! Feel free to [create a Pull Request](https://github.com/splunk/splunk-plotly-collection-viz/pulls)
-* **Found a bug?** [Open an issue](https://github.com/splunk/splunk-plotly-collection-viz/issues/new)
+* :rocket: Want to **contribute**? [Open a Pull Request](https://github.com/splunk/splunk-plotly-collection-viz/pulls)
+* :bug: **Found a bug?** [Open an issue](https://github.com/splunk/splunk-plotly-collection-viz/issues/new?assignees=edro15&labels=&template=bug_report.md&title=)
+* :bulb: Got an idea for a new feature? [Open an issue](https://github.com/splunk/splunk-plotly-collection-viz/issues/new?assignees=edro15&labels=&template=feature_request.md&title=)
 
 ## License
 This project is licensed under [Apache-2.0](LICENSE.md)
