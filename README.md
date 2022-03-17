@@ -1,6 +1,6 @@
 # Financial and Advanced Statistical Data Visualizations
 
-![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fsplunkbasebadge.livehybrid.com%2Fv1%2Finstalls%2F5730%2F)
+![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fsplunkbasebadge.livehybrid.com%2Fv1%2Fdownloads%2F5730%2F)
 [![Actions Status: test](https://github.com/splunk/splunk-plotly-collection-viz/actions/workflows/ci.yml/badge.svg)](https://github.com/splunk/splunk-plotly-collection-viz/actions?query=workflow%3A"CI")
 [![Latest release (latest by date)](https://img.shields.io/github/v/release/splunk/splunk-plotly-collection-viz?label=Latest%20Release)](https://github.com/splunk/splunk-plotly-collection-viz/releases)
 [![License](https://img.shields.io/github/license/splunk/splunk-plotly-collection-viz)](LICENSE)
