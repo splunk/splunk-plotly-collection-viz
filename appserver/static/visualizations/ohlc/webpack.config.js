@@ -7,6 +7,7 @@ module.exports = {
         filename: path.join(__dirname, 'src') + '/visualization_source.js'
     },
     output: {
+        path: path.resolve(__dirname),
         filename: 'visualization.js',
         libraryTarget: 'amd'
     },
