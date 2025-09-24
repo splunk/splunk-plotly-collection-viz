@@ -1,9 +1,12 @@
 name: CI
 
 on:
-  push:
-    paths-ignore:
-      - '.github/workflows/manual-release.yml'
+  pull_request:
+    paths:
+      - 'packages/**'
+    branches:
+      - master
+    types: [opened, reopened, synchronize]
 
 jobs:
   bundle-app:
