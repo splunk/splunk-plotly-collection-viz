@@ -7,7 +7,7 @@
         <search>
           <query>| gentimes start=-30 increment=6h
 | fields starttime
-| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S") 
+| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S")
 | eval open=(random() %50) + 1
 | eval sign=if((random() %2)==0,"-","+")
 | eval close=(((random() %20)/100)*open)
@@ -15,9 +15,10 @@
 | eval close=round(close+open,1)
 | eval high=if(open &gt; close,(open*.1)+open,(close*.1)+close)
 | eval low=if(open &lt; close,open-(open*.1),close-(close*.1))
-| sort starttime 
+| eval currencypair="GBP/USD"
+| sort starttime
 | fields - sign, starttime
-| trendline ema8(close) AS 8PointEMA ema20(close) AS 20PointEMA 
+| trendline ema8(close) AS 8PointEMA ema20(close) AS 20PointEMA
 | reverse</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -59,11 +60,11 @@
         <search>
           <query>| gentimes start=-30 increment=6h
 | fields starttime
-| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S") 
-| eval line1=(random() %50) + 1 
-| eval line2=(random() %50) + 1 
-| eval sign=if((random() %2)==0,"-","+") 
-| eval scatter=(((random() %20)/100)*line1) 
+| eval _time=strftime(starttime,"%Y-%m-%dT%H:%M:%S")
+| eval line1=(random() %50) + 1
+| eval line2=(random() %50) + 1
+| eval sign=if((random() %2)==0,"-","+")
+| eval scatter=(((random() %20)/100)*line1)
 | eval scatter=sign.scatter
 | fields - sign
 | table _time, scatter, line1, line2</query>
