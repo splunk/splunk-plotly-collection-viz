@@ -33,9 +33,9 @@
       "uri": null
     },
     "releaseNotes": {
-      "name": "README",
-      "text": "README.md",
-      "uri": null
+      "name": "Plotly.js Charts for Splunk Release Notes",
+      "text": null,
+      "uri": "https://github.com/splunk/splunk-plotly-collection-viz/releases"
     }
   },
   "dependencies": null,
