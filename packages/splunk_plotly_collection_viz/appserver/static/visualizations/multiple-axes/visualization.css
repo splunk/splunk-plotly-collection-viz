@@ -1,0 +1,28 @@
+/* Formatting for text element*/
+@import url('./contrib/css/c3.css');
+
+/* Hide xaxis on top */
+g.zerolinelayer .y2zl.zl.crisp {
+  stroke-opacity: 0 !important;
+}
+
+/* Edit spikelines width */
+.spikeline.crisp[stroke^='#'] {
+  stroke-width: 2;
+}
+
+/* Dark Theme Support */
+
+div[id^='modebar'].modebar .modebar-group {
+    background-color: transparent !important;
+}
+
+/* Spikelines = 1xSpikeline w/ rgb(255,255,255) + 1xSpikeline w/ trace color in Hex */
+.spikeline.crisp[stroke^='rgb'] {
+  display: none;
+}
+
+/* Plotly.js modebar Positioning */
+div.modebar-container {
+  right: 1% !important;
+}

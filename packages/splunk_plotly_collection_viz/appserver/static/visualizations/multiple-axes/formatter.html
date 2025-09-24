@@ -1,0 +1,64 @@
+<form class="splunk-formatter-section" section-label="General">
+
+  <splunk-control-group label="Title">
+    <splunk-text-input name="{{VIZ_NAMESPACE}}.titleChart">
+    </splunk-text-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Display Plotly Mode Bar">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.mbDisplay" value='0'>
+      <option value='1'>Show</option>
+      <option value='0'>Hide</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Display Legend">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLegend" value='1'>
+      <option value='1'>Show</option>
+      <option value='0'>Hide</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+</form>
+
+<form class="splunk-formatter-section" section-label="X Axis">
+  <splunk-control-group label="X-Axis Label Name">
+    <splunk-text-input name="{{VIZ_NAMESPACE}}.xAxisName">
+    </splunk-text-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="X-Axis Label Rotation">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.xAngle" value=0>
+      <option value=0>Default</option>
+      <option value=45>45°</option>
+      <option value=90>90°</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+</form>
+
+<form class="splunk-formatter-section" section-label="Y Axes">
+  <splunk-control-group label="Y-Axis Label Name">
+    <splunk-text-input name="{{VIZ_NAMESPACE}}.yAxisName">
+    </splunk-text-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Y-Axis Label Rotation">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.yAngle" value=0>
+      <option value=0>Default</option>
+      <option value=45>45°</option>
+      <option value=90>90°</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Y2-Axis Label Name">
+    <splunk-text-input name="{{VIZ_NAMESPACE}}.y2AxisName">
+    </splunk-text-input>
+  </splunk-control-group>
+
+  <splunk-control-group label="Y2-Axis Label Rotation">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.y2Angle" value=0>
+      <option value=0>Default</option>
+      <option value=45>45°</option>
+      <option value=90>90°</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+</form>

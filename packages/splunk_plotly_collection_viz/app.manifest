@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "Plotly.js Charts for Splunk",
+    "id": {
+      "group": null,
+      "name": "splunk_plotly_collection_viz",
+      "version": "2.4.1"
+    },
+    "author": [
+      {
+        "name": "Erica Pescio",
+        "email": null,
+        "company": null
+      }
+    ],
+    "releaseDate": null,
+    "description": "Financial and advanced statistical data visualizations based on Plotly.js",
+    "classification": {
+      "intendedAudience": null,
+      "categories": ["Business Analytics", "Utilities"],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": null,
+      "text": "LICENSE.md",
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": "Plotly.js Charts for Splunk Release Notes",
+      "text": null,
+      "uri": "https://github.com/splunk/splunk-plotly-collection-viz/releases"
+    }
+  },
+  "dependencies": null,
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": [
+    "*"
+  ],
+  "targetWorkloads": [
+    "_search_heads"
+  ]
+}

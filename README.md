@@ -29,9 +29,9 @@ If not provided, default values will be used for optional fields `currencypair`,
 
 > Field names **must** correspond to the ones specified above to be properly handled by the visualization
 
-![alt text](.images/OHLC_candlestick.png "OHLC Chart - Candlestick Example")
+![alt text](etc/OHLC_candlestick.png "OHLC Chart - Candlestick Example")
 
-![alt text](.images/OHLC_bars.png "OHLC Chart - Bars Example")
+![alt text](etc/OHLC_bars.png "OHLC Chart - Bars Example")
 
 ### Box Plot
 `<basesearch> | table box_name value`
@@ -43,7 +43,7 @@ Replace `box_name` and `value` with your fields to start.
 | `box_name`  | string  | Label of the box         | `A`       |
 | `value`     | numeric | Data forming box dataset | `20`      |
 
-![alt text](.images/boxplot_chart.png "Boxplot Chart Example")
+![alt text](etc/boxplot_chart.png "Boxplot Chart Example")
 
 ### Multiple Axes Plot
 `<basesearch> | table _time scatter-y2-dataset1 scatter-y2_datasetN line-y-dataset1 line-y-datasetN`
@@ -60,12 +60,12 @@ Replace `_time`, `scatter-y2-datasetX` and `line-y-datasetX` with your fields to
 
 > Field names **must** begin with `scatter` and `line` to be properly handled by the visualization
 
-![alt text](.images/MultipleAxes_plot.png "Multiple Axes Plot")
+![alt text](etc/MultipleAxes_plot.png "Multiple Axes Plot")
 
 ## Example
 This app comes with a dashboard showcasing simple usages of mentioned charts.
 
-* Navigate to `Apps / Search & Reporting / Dashboards` 
+* Navigate to `Apps / Search & Reporting / Dashboards`
 * Click on the dashboard `Overview of Plotly Charts for Splunk`
 * Be inspired
 
@@ -75,4 +75,4 @@ This app comes with a dashboard showcasing simple usages of mentioned charts.
 * :bulb:   Got an idea for a **new feature**? [Open a feature request](https://github.com/splunk/splunk-plotly-collection-viz/issues/new?assignees=edro15&labels=&template=feature_request.md&title=)
 
 ## License
-This project is licensed under [Apache-2.0](LICENSE.md)
+This project is licensed under [Apache-2.0](./packages/splunk_plotly_collection_viz/LICENSE.md)
