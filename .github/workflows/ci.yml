@@ -14,21 +14,21 @@ jobs:
       - name: Read App Info
         id: app
         run: |
-          app_id=$(cat app.manifest | jq -r '.info.id.name')
-          app_version=$(cat app.manifest | jq -r '.info.id.version')
+          app_id=$(cat splunk_*/app.manifest | jq -r '.info.id.name')
+          app_version=$(cat splunk_*/app.manifest | jq -r '.info.id.version')
           echo "name=${app_id}" >> $GITHUB_OUTPUT
           echo "version=${app_version}" >> $GITHUB_OUTPUT
+        working-directory: ./packages
 
       - name: Bundle app source
         env:
           APP_NAME: ${{ steps.app.outputs.name }}
-          APP_VERSION: ${{ steps.app.outputs.vesion }}
+          APP_VERSION: ${{ steps.app.outputs.version }}
         run: |
           # Exclude images from README file
           sed -i '/^!/d' README.md
-          mkdir -p output/$APP_NAME
-          rsync -av --exclude='.[^/]*' --exclude='output/' ./ output/$APP_NAME
-          tar -C output -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
+          cp README.md packages/$APP_NAME
+          tar -C packages -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
