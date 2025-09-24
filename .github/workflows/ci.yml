@@ -9,33 +9,32 @@ jobs:
   bundle-app:
     name: Bundle App
     runs-on: ubuntu-latest
-    outputs:
-      app_name: ${{ steps.appinfo.outputs.app_name }}
-      app_id: ${{ steps.appinfo.outputs.app_id }}
     steps:
       - uses: actions/checkout@v4
       - name: Read App Info
-        id: appinfo
+        id: app
         run: |
-          APP_ID=$(cat app.manifest | jq -r '.info.id.name')
-          echo "app_id=${APP_ID}" >> $GITHUB_OUTPUT
-          APP_NAME=$(echo "$APP_ID" | tr _ - )
-          echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
-
-      - name: Exclude images from README
-        run: |
-          sed -i '/^!/d' README.md
+          app_id=$(cat app.manifest | jq -r '.info.id.name')
+          app_version=$(cat app.manifest | jq -r '.info.id.version')
+          echo "name=${app_id}" >> $GITHUB_OUTPUT
+          echo "version=${app_version}" >> $GITHUB_OUTPUT
 
       - name: Bundle app source
+        env:
+          APP_NAME: ${{ steps.app.outputs.name }}
+          APP_VERSION: ${{ steps.app.outputs.vesion }}
         run: |
-          mkdir dist
-          tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}.tgz --exclude='.[^/]*' --exclude=./dist .
+          # Exclude images from README file
+          sed -i '/^!/d' README.md
+          mkdir -p output/$APP_NAME
+          rsync -av --exclude='.[^/]*' --exclude='output/' ./ output/$APP_NAME
+          tar -C output -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: packaged_app
-          path: dist/${{ steps.appinfo.outputs.app_name }}.tgz
+          path: ${{ steps.app.outputs.name }}*.tar.gz
 
   slim-validate:
     name: SLIM Validation
@@ -61,7 +60,7 @@ jobs:
           pip install splunk-packaging-toolkit
 
       - name: Slim Validate
-        run: slim validate *.tgz
+        run: slim validate *.tar.gz
 
   appinspect-cli:
     name: AppInspect CLI ${{ matrix.tags }}
