@@ -2,14 +2,14 @@
 
 This is the basic template for a splunk visualization app. This teamplate is meant to be edited to build custom visualizations. It contains:
 
-- The relevant directory structure for a visuzliation app
+- The relevant directory structure for a visualization app
 - A standin visualization package directory with a standin visualiztion and a basic webpack configuration
 - Relevant .conf files for the visualization
 
 ## Building the visualization
 
-	NOTE: You must have npm installed in oder to build. If you do not have npm installed, install it and come back. 
-	
+:point_right: You **must have npm installed** in oder to build. If you do not have npm installed, install it and come back. :point_left:
+
 The visualization contained in this app must be built using web pack in order to run it on Splunk. There is a basic webpack configuration built in to the app. To build from the command line, first, cd to the *visualization/standin* directory. On the first run you will have to install the dependeincies with npm:
 
 ```
@@ -21,7 +21,7 @@ Once you done that, you can build the viz with the provided build task:
 $ npm run build
 ```
 
-This will create a *visualization.js* file in the visualization directory. 
+This will create a *visualization.js* file in the visualization directory.
 
 ## Adding Your Own Code
 
