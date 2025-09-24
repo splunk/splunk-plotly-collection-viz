@@ -1,6 +1,6 @@
 name: CI
 
-on: 
+on:
   push:
     paths-ignore:
       - '.github/workflows/manual-release.yml'
@@ -13,10 +13,8 @@ jobs:
       app_name: ${{ steps.appinfo.outputs.app_name }}
       app_id: ${{ steps.appinfo.outputs.app_id }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Fetch and set app info
+      - uses: actions/checkout@v4
+      - name: Read App Info
         id: appinfo
         run: |
           APP_ID=$(cat app.manifest | jq -r '.info.id.name')
@@ -24,7 +22,7 @@ jobs:
           APP_NAME=$(echo "$APP_ID" | tr _ - )
           echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
 
-      - name: Excluding images from README
+      - name: Exclude images from README
         run: |
           sed -i '/^!/d' README.md
 
@@ -32,70 +30,59 @@ jobs:
         run: |
           mkdir dist
           tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}.tgz --exclude='.[^/]*' --exclude=./dist .
-  
+
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: app_tgz
+          name: packaged_app
           path: dist/${{ steps.appinfo.outputs.app_name }}.tgz
-  
+
   slim-validate:
     name: SLIM Validation
     needs: bundle-app
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.9 ]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: app_tgz
+          name: packaged_app
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install splunk-packaging-toolkit
-      
-      - name: Unpackage artifact
-        run: |
-          mkdir ${{ needs.bundle-app.outputs.app_id }}
-          tar -xf ${{ needs.bundle-app.outputs.app_name }}.tgz -C ${{ needs.bundle-app.outputs.app_id }}
 
       - name: Slim Validate
-        run: slim validate ${{ needs.bundle-app.outputs.app_id }}
+        run: slim validate *.tgz
 
   appinspect-cli:
-    name: AppInspect CLI Validation
+    name: AppInspect CLI ${{ matrix.tags }}
     needs: bundle-app
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tags:
+          - "cloud"
+          - "private_app"
+          - "private_classic"
+          - "private_victoria"
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: app_tgz
-
-      - name: Unpackage artifact
-        run: |
-          mkdir -p build/${{ needs.bundle-app.outputs.app_id }}
-          tar -xf ${{ needs.bundle-app.outputs.app_name }}.tgz -C build/${{ needs.bundle-app.outputs.app_id }}
-      
-      - name: Setup Python
-        uses: actions/setup-python@v4
+          name: packaged_app
+          path: dist
+      - uses: splunk/appinspect-cli-action@v2.10
         with:
-          python-version: 3.7
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install splunk-appinspect
-      
-      - name: Run AppInspect
-        run: |
-          splunk-appinspect inspect ${{ needs.bundle-app.outputs.app_id }} --output-file appinspect.json
-          exit `cat appinspect.json | jq '.summary.failure'`
-        working-directory: ./build
+          app_path: dist
+          included_tags: ${{ matrix.tags }}
 
   # appinspect-api:
   #   name: AppInspect API Validation
