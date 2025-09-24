@@ -22,7 +22,7 @@ jobs:
       - name: Get App Info
         id: app
         run: |
-          MANIFEST="splunk*/app.manifest"
+          MANIFEST="splunk_plotly_collection_viz/app.manifest"
           if [ -f "$MANIFEST" ]; then
             app_id=$(cat "$MANIFEST" | jq -r '.info.id.name')
             app_version=$(cat "$MANIFEST" | jq -r '.info.id.version')
