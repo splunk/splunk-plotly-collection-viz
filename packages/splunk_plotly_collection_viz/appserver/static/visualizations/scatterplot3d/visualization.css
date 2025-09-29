@@ -1,0 +1,13 @@
+/* Formatting for text element*/
+@import url('./contrib/css/c3.css');
+
+
+/* Plotly.js modebar Positioning */
+div.modebar-container {
+  right: 1% !important;
+}
+
+/* Dark Theme Support */
+div[id^='modebar'].modebar .modebar-group {
+    background-color: transparent !important;
+}

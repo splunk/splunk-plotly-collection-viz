@@ -45,6 +45,9 @@ export = system
 [visualizations/multiple-axes]
 export = system
 
+[visualizations/scatterplot3d]
+export = system
+
 ### VIEWS
 
 [views/overview_plotly_charts]
