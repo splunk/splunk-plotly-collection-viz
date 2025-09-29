@@ -78,5 +78,27 @@
         <option name="trellis.size">medium</option>
       </viz>
     </panel>
+    <panel>
+      <title>Scatterplot 3D</title>
+      <viz type="splunk_plotly_collection_viz.scatterplot3d">
+        <search>
+          <query>| makeresults count=100
+| streamstats count as id
+| eval trace = case(id &lt;= 30, "A",id &lt;= 70, "B",true(), "C")
+| eval x = random() % 100
+| eval y = random() % 100
+| eval z = random() % 100
+| eval marker_size = (random() % 50) + 1
+| table trace x y z marker_size</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </viz>
+    </panel>
   </row>
 </dashboard>
