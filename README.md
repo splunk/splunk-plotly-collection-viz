@@ -8,9 +8,9 @@
 A collection of Splunk modular visualizations based on [plotly.js](https://github.com/plotly/plotly.js/), a JavaScript open-source library used to create interactive charts for finance, engineering and sciences.
 
 Visualizations included into this collection:
-* OHLC Chart -  for Stocks and Financial Data    ([source code](appserver/static/visualizations/ohlc/src/visualization_source.js))
-* Box Plot Chart - for Statistical Data    ([source code](appserver/static/visualizations/boxplot/src/visualization_source.js))
-* Multiple Axes Chart - for Advanced Statistical Data Visualizations    ([source code](appserver/static/visualizations/multiple-axes/src/visualization_source.js))
+* [OHLC Chart](#ohlc-chart) for Stocks and Financial Data :hammer_and_wrench: [source code](appserver/static/visualizations/ohlc/src/visualization_source.js)
+* [Box Plot Chart](#box-plot) for Statistical Data :hammer_and_wrench: [source code](appserver/static/visualizations/boxplot/src/visualization_source.js)
+* [Multiple Axes Chart](#multiple-axes-plot) for Advanced Statistical Data Visualizations :hammer_and_wrench: [source code](appserver/static/visualizations/multiple-axes/src/visualization_source.js)
 
 ## Installation
 Please refer to the [Splunk Documentation](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) for guidance on installing the Add-On in your environment. The app needs to be installed on the SH tier.
