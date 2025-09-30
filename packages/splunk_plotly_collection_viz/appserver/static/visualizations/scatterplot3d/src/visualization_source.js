@@ -157,7 +157,6 @@ define([
       var layout = {
         showlegend: dispLegend,
         autosize: true,
-        height: this.$el.height(),
         margin: {
           t: 50
         },
@@ -168,6 +167,12 @@ define([
         },
         legend: {
           bgcolor: isDarkTheme ? '#212527' : '#fff',
+          // move legend above the chart
+          orientation: "h",
+          y: 1.1,  // 1.0 is top of the plot
+          x: 0.5,  // 1.0 is fully right, 0.5 is center
+          xanchor: "center", // anchor point relative to x
+          yanchor: "bottom" // anchor point relative to y
         },
         scene: {
           bgcolor: isDarkTheme ? "transparent" : "#fff",
@@ -202,6 +207,7 @@ define([
       // full options at: https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js
       Plotly.newPlot('scatterplot3dContainer_' + this.__uniqueID, dataInput, layout, {
         displayModeBar: modeBar,
+        responsive: true,
         displaylogo: false
       });
 
