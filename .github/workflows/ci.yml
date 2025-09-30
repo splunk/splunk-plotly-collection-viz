@@ -12,6 +12,8 @@ jobs:
   bundle-app:
     name: Bundle App
     runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.app.outputs.artifact_name }}
     steps:
       - uses: actions/checkout@v4
       - name: Read App Info
@@ -21,6 +23,7 @@ jobs:
           app_version=$(cat splunk_*/app.manifest | jq -r '.info.id.version')
           echo "name=${app_id}" >> $GITHUB_OUTPUT
           echo "version=${app_version}" >> $GITHUB_OUTPUT
+          echo "artifact_name=${app_id}-${app_version}" >> $GITHUB_OUTPUT
         working-directory: ./packages
 
       - name: Bundle app source
@@ -36,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: packaged_app
+          name: ${{ steps.app.outputs.artifact_name }}
           path: ${{ steps.app.outputs.name }}*.tar.gz
 
   slim-validate:
@@ -50,7 +53,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: packaged_app
+          name: ${{ needs.bundle-app.outputs.artifact_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -79,7 +82,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: packaged_app
+          name: ${{ needs.bundle-app.outputs.artifact_name }}
           path: dist
       - uses: splunk/appinspect-cli-action@v2.10
         with:
