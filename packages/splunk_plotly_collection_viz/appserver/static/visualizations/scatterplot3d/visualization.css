@@ -11,3 +11,9 @@ div.modebar-container {
 div[id^='modebar'].modebar .modebar-group {
     background-color: transparent !important;
 }
+
+/* Resize plot when panel shrinks/expands */
+div[id^='scatterplot3dContainer_'] div#scene {
+  top: 30px !important;
+  height: calc(100% - 100px) !important;
+}
