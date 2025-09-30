@@ -11,6 +11,7 @@ Visualizations included into this collection:
 * [OHLC Chart](#ohlc-chart) for Stocks and Financial Data :hammer_and_wrench: [source code](appserver/static/visualizations/ohlc/src/visualization_source.js)
 * [Box Plot Chart](#box-plot) for Statistical Data :hammer_and_wrench: [source code](appserver/static/visualizations/boxplot/src/visualization_source.js)
 * [Multiple Axes Chart](#multiple-axes-plot) for Advanced Statistical Data Visualizations :hammer_and_wrench: [source code](appserver/static/visualizations/multiple-axes/src/visualization_source.js)
+* [Scatterplot 3D](#scatterplot3d) for Multiple Dimensions / Clustering Data Visualizations :hammer_and_wrench: [source code](appserver/static/visualizations/scatterplot3d/src/visualization_source.js)
 
 ## Installation
 Please refer to the [Splunk Documentation](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) for guidance on installing the Add-On in your environment. The app needs to be installed on the SH tier.
@@ -61,6 +62,24 @@ Replace `_time`, `scatter-y2-datasetX` and `line-y-datasetX` with your fields to
 > Field names **must** begin with `scatter` and `line` to be properly handled by the visualization
 
 ![alt text](etc/MultipleAxes_plot.png "Multiple Axes Plot")
+
+### Scatterplot 3D
+`<basesearch> | table trace x y z [marker_size]`
+
+If not provided, default values will be used for optional field `marker_size`.
+
+Replace `trace`, `x`, `y` and `z` with your fields to start.
+
+| FieldName   | Format  | Description              | Example   |
+|-------------|---------|--------------------------|-----------|
+| `trace`  | string  | Label of the trace         | `A`       |
+| `x`     | numeric | X-coordinate of data forming trace dataset | `20`      |
+| `y`     | numeric | Y-coordinate of data forming trace dataset | `2`      |
+| `z`     | numeric | Z-coordinate of data forming trace dataset | `100`      |
+| `marker_size`     | numeric | Size of the data marker in pixels. Range [1-50]. | `20`      |
+
+
+![alt text](etc/scatterplot3d.png "Scatterplot 3D Chart Example")
 
 ## Example
 This app comes with a dashboard showcasing simple usages of mentioned charts.
