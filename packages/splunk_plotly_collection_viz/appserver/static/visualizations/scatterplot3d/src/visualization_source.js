@@ -71,18 +71,13 @@ define([
                       return rows.indexOf(x) === i;
                     });
 
-      var tracesIds = Array.from({length: traces.length}, function(v, k){
-                            value = k+1;
-                            return value.toString();
-                        });
-
       var traceValues = [];
       var markerSizes = [];
 
-      _.each(traces, function(groupid) {
-          // get all objects with same groupid
+      _.each(traces, function(trace) {
+          // get all objects of each trace
           var arr = rows.filter(function(el){
-                            return el[0] === groupid;
+                            return el[0] === trace;
                          });
           // Collect all the x values
           traceValues.push(arr.map(x => x[1]));
@@ -100,7 +95,6 @@ define([
       return {
         "fields": fields,
         "content": {
-          "ids": tracesIds,
           "labels": traces,
           "values": traceValues,
           "msizes": markerSizes
@@ -115,7 +109,6 @@ define([
       // console.log(data);
 
       var dataset = data.content,
-          tracesIds = dataset.ids, // e.g. [1,2,3,4,5]
           traces = dataset.labels,
           tracesValues = dataset.values,
           markersSizes = dataset.msizes;
@@ -137,11 +130,12 @@ define([
       $('#' + this.id).empty();
 
       // create a trace for every group of data
-      let dataInput = tracesIds.map((v, i, a) => {
+      let dataInput = traces.map((v, i, a) => {
+        let idx = i*3;
         return {
-          x: tracesValues[i],
-          y: tracesValues[i+1],
-          z: tracesValues[i+2],
+          x: tracesValues[idx],
+          y: tracesValues[idx+1],
+          z: tracesValues[idx+2],
           type: 'scatter3d',
           mode: 'markers',
           name: traces[i],
