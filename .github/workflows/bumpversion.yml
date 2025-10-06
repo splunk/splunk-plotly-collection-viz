@@ -8,6 +8,10 @@ on:
         required: true
         default: "minor"
 
+# Add permission to push to repo
+permissions:
+  contents: write
+
 jobs:
   bump:
     name: Bump App Version
