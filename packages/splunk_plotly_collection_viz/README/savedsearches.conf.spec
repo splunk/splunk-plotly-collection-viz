@@ -39,3 +39,12 @@ display.visualizations.custom.multiple-axes.multiple-axes.y2Angle = <float>
 display.visualizations.custom.multiple-axes.multiple-axes.xAxisName = <string>
 display.visualizations.custom.multiple-axes.multiple-axes.yAxisName = <string>
 display.visualizations.custom.multiple-axes.multiple-axes.y2AxisName = <string>
+
+display.visualizations.custom.scatterplot3d.scatterplot3d.mbDisplay = <number>
+display.visualizations.custom.scatterplot3d.scatterplot3d.showLegend = <number>
+display.visualizations.custom.scatterplot3d.scatterplot3d.xAngle = <float>
+display.visualizations.custom.scatterplot3d.scatterplot3d.yAngle = <float>
+display.visualizations.custom.scatterplot3d.scatterplot3d.zAngle = <float>
+display.visualizations.custom.scatterplot3d.scatterplot3d.xAxisName = <string>
+display.visualizations.custom.scatterplot3d.scatterplot3d.yAxisName = <string>
+display.visualizations.custom.scatterplot3d.scatterplot3d.zAxisName = <string>

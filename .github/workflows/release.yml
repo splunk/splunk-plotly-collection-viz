@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ta_version: ${{ steps.app.outputs.version }}
+      artifact_name: ${{ steps.app.outputs.artifact_name }}
     steps:
       - uses: actions/checkout@v4
       - name: Get App Info
@@ -28,6 +29,7 @@ jobs:
             app_version=$(cat "$MANIFEST" | jq -r '.info.id.version')
             echo "name=${app_id}" >> $GITHUB_OUTPUT
             echo "version=${app_version}" >> $GITHUB_OUTPUT
+            echo "artifact_name=${app_id}-${app_version}" >> $GITHUB_OUTPUT
           else
             echo "Files Not Found ❌ Please add 'packages/$MANIFEST'"
             exit 1
@@ -46,7 +48,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: packaged_app
+          name: ${{ steps.app.outputs.artifact_name }}
           path: ${{ steps.app.outputs.name }}*.tar.gz
 
   release:
@@ -57,7 +59,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: packaged_app
+          name: ${{ needs.build.outputs.artifact_name }}
           path: dist
       - name: Fetch latest release info from CHANGELOG
         id: changelog
