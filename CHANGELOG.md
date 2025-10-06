@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 
 
+## [v2.5.0] - 2025-10-06
+
+### Added
+
+- Source code and documentation for a new plot based on plotly.js: scatterplot 3d ([#8](https://github.com/splunk/splunk-plotly-collection-viz/pull/8)).
+
+### Changed
+
+- Integrated dashboard provides an example of the scatterplot 3d plot ([#8](https://github.com/splunk/splunk-plotly-collection-viz/pull/8)).
+- Updated dependencies ([#6](https://github.com/splunk/splunk-plotly-collection-viz/pull/6)) ([#8](https://github.com/splunk/splunk-plotly-collection-viz/pull/8)).
+- Updated CI/CD pipelines ([#6](https://github.com/splunk/splunk-plotly-collection-viz/pull/6)) ([#8](https://github.com/splunk/splunk-plotly-collection-viz/pull/8)).
+
+### Removed
+
+- Dependency on Splunk node.js to support Splunk 10.0 ([#6](https://github.com/splunk/splunk-plotly-collection-viz/pull/6)).
+
+
 ## [v2.4.1] - 2024-04-03
 
 ### Changed
