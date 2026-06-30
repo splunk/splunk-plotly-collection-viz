@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 
 
+## [v2.5.1] - 2026-06-30
+
+### Changed
+
+- Updated dependencies ([#9](https://github.com/splunk/splunk-plotly-collection-viz/pull/9)).
+- Updated CI/CD pipelines ([#9](https://github.com/splunk/splunk-plotly-collection-viz/pull/9)).
+
+
 ## [v2.5.0] - 2025-10-06
 
 ### Added
